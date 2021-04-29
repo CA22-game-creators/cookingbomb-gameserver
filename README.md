@@ -1,2 +1,6 @@
 # cookingbomb-gameserver
-Repository for realtime game server
+環境メモ
+```
+kubenetes 1.18
+```
+- kubernetesは最新版ではダメ = agonesが対応していない
