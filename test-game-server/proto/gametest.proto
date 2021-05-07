@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.gametest";
+option java_outer_classname = "GameTestProto";
+
+option go_package = "github.com/CA22-game-creators/cookingbomb-gameserver/test-game-server/proto";
+
+import "google/protobuf/timestamp.proto";
+
+//## service
+
+service Game {
+    rpc Connect(ConnectRequest) returns (stream ConnectionStats);
+    rpc Disconnect(ConnectRequest) returns (ConnectionStats);
+
+    rpc SessionGame(stream UpdatePlayerRequest) returns (stream GameResponce);
+}
+
+//### model
+
+message Position {
+    double x = 1;
+    double y = 2;
+    double z = 3;
+}
+
+message PlayerData {
+    string id = 1;
+    string name = 2;
+    bool is_active = 3;
+    Position position = 4;
+    google.protobuf.Timestamp update_time = 5;
+}
+
+enum ConnectionStatsEnum {
+    CONNECTING = 0;                         //サーバーがリクエストを受信し、処理中であること
+    CONNECTED = 1;                          //サーバーがリクエストを受理し、各種streamへの接続が可能となっている
+    DISCONNECTED = 10;                      //以下に該当しない理由でサーバーから切断した
+    DISCONNECTED_BY_CLIENT = 11;            //クライアントからのリクエストに基づき、サーバーから切断した
+    DISCONNECTED_BY_GAME_END = 12;          //ゲームが終了したため、サーバーから切断した
+    CONNECTION_FAIL_AUTH = 40;              //トークンの認証に失敗した
+    CONNECTION_FAIL_GAME_NOT_FOUND = 41;    //サーバーが持つゲーム内にマッチングされたユーザーリストに該当していない
+}
+
+enum GameStatsEnum {
+    SERVER_GETTING_READY = 0;   //サーバーがゲーム開始に向けて準備中
+    PLAYER_WAITING = 1;         //プレイヤーの入室を待機中
+    GAME_BEGINNING = 2;         //ゲーム開始中
+    GAME_RUNNNING = 3;          //ゲームが開催中
+    GAME_END = 4;               //ゲームが終了
+    GAME_SHUTDOWN = 5;          //間もなくサーバーが閉じる
+}
+
+//### message
+
+message ConnectRequest {
+    string session_token = 1;    //ユーザーを特定する一意のトークン
+}
+
+message UpdatePlayerRequest {
+    string session_token = 1;
+    google.protobuf.Timestamp update_time = 2;
+    Position position = 3;
+}
+
+message ConnectionStats {
+    bool is_connecting = 1;
+    ConnectionStatsEnum value = 2;
+}
+
+message GameResponce {
+    GameStatsEnum game_stats = 1;
+    repeated PlayerData players = 2;
+}
