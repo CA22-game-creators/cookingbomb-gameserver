@@ -2,15 +2,15 @@ package api
 
 //TODO
 type AuthRequestParam struct {
-	authToken string
+	sessionToken string
 }
 
 type AuthResponceSet struct {
 	result bool
 }
 
-func AuthRequest (AuthRequestParam) (AuthResponceSet, error) {
+func AuthRequest(AuthRequestParam) (AuthResponceSet, error) {
 	//TODO
-	result AuthResponceSet := {Result := true};
-	return 
+	result := AuthResponceSet{result: true}
+	return result, nil
 }

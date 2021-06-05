@@ -1,5 +1,9 @@
-module github.com/CA22-game-creators/cookingbomb-gameserver
+module github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server
 
 go 1.16
 
-require google.golang.org/grpc v1.38.0
+require (
+	github.com/CA22-game-creators/cookingbomb-proto v0.1.8
+	github.com/patrickmn/go-cache v2.1.0+incompatible
+	google.golang.org/grpc v1.38.0
+)

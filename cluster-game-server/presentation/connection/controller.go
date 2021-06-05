@@ -8,6 +8,8 @@ import (
 
 type connection struct{}
 
-func (c connection) Connection(ctx context.Context, in *pb.ConnectionRequest) {
-
+func (c connection) Connection(ctx context.Context, in *pb.ConnectionRequest) (*pb.ConnectionResponse, error) {
+	return &pb.ConnectionResponse{
+		Status: pb.ConnectionStatusEnum_CONNECTED,
+	}, nil
 }
