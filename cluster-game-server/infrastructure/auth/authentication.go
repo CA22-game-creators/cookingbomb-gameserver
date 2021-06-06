@@ -6,22 +6,25 @@ import (
 
 var cacheInstance *c.TokenCacheInstance = c.New()
 
-type User struct {
-	id   string
-	name string
+// トークンを認証する
+func AuthToken(token string) (bool, error) {
+	//TODO: API叩いてチェック
+
+	//TODO: トークンをセッション処理関数に投げる
+
+	return true, nil
 }
 
-func CheckAuthToken(token string) bool {
-	cache := checkAuthTokenCached(token)
+// トークンを検証する
+func CheckToken(token string) (bool, error) {
+	cache := checkTokenCached(token)
 	if cache {
-		return true
+		return true, nil
 	}
-
-	//TODO
-	return true
+	return AuthToken(token)
 }
 
-func checkAuthTokenCached(token string) bool {
+func checkTokenCached(token string) bool {
 	found := cacheInstance.CheckTokenCached(token)
 	return found
 }

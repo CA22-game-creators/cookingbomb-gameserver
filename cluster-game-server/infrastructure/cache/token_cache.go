@@ -3,7 +3,7 @@ package cache
 import (
 	"time"
 
-	auth "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/auth"
+	user "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/model/user"
 	"github.com/patrickmn/go-cache"
 )
 
@@ -23,14 +23,14 @@ func (instance TokenCacheInstance) CheckTokenCached(token string) bool {
 	return found
 }
 
-func (instance TokenCacheInstance) GetValue(token string) (auth.User, bool) {
+func (instance TokenCacheInstance) GetValue(token string) (user.User, bool) {
 	cv, found := instance.cache.Get(token)
 	if found {
-		return cv.(auth.User), true
+		return cv.(user.User), true
 	}
-	return auth.User{}, false
+	return user.User{}, false
 }
 
-func (instance TokenCacheInstance) SetValue(token string, value auth.User) {
-	instance.cache.Set(token, value, cache.DefaultExpiration)
+func (instance TokenCacheInstance) SetValue(token string, value user.User) {
+	instance.cache.Set(token, value, cache.NoExpiration)
 }
