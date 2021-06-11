@@ -4,6 +4,7 @@ import (
 	"context"
 
 	auth "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/auth"
+	session "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/session"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -22,43 +23,35 @@ func (g *GameService) Connect(ctx context.Context, in *pb.ConnectionRequest) (*p
 		}, status.Errorf(codes.PermissionDenied, "Token Rejected")
 	}
 
-	//TODO: token status check
+	session.ActivateSession(token)
 
 	return &pb.ConnectionResponse{
-		Status: pb.ConnectionStatusEnum_CONNECTED,
+		Status: session.GetSessionStatus(token),
 	}, nil
 }
 
 func (g *GameService) Disconnect(ctx context.Context, in *pb.ConnectionRequest) (*pb.ConnectionResponse, error) {
 	token := in.GetSessionToken()
-	allow, err := auth.CheckToken(token)
-	if err != nil {
-		return nil, err
-	}
+	allow := auth.CheckToken(token)
 	if !allow {
 		return nil, status.Errorf(codes.PermissionDenied, "Token Rejected")
 	}
 
-	//TODO: token status update
+	session.EndSessionByClient(token)
 
 	return &pb.ConnectionResponse{
-		Status: pb.ConnectionStatusEnum_DISCONNECTED_BY_CLIENT,
+		Status: session.GetSessionStatus(token),
 	}, nil
 }
 
 func (g *GameService) GetConnectionStatus(ctx context.Context, in *pb.ConnectionRequest) (*pb.ConnectionResponse, error) {
 	token := in.GetSessionToken()
-	allow, err := auth.CheckToken(token)
-	if err != nil {
-		return nil, err
-	}
+	allow := auth.CheckToken(token)
 	if !allow {
 		return nil, status.Errorf(codes.PermissionDenied, "Token Rejected")
 	}
 
-	//TODO: token status check
-
 	return &pb.ConnectionResponse{
-		Status: pb.ConnectionStatusEnum_CONNECTED,
+		Status: session.GetSessionStatus(token),
 	}, nil
 }
