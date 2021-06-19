@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"time"
 
 	account "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/model/account"
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/api"
@@ -11,23 +12,35 @@ import (
 )
 
 func getAccountInfo(token string) (*pb.AccountInfo, error) {
-	ctx, cancel := context.WithCancel(
+	// TODO: タイムアウトの検討: 5秒
+
+	ctx, cancel := context.WithTimeout(
 		context.Background(),
+		time.Second*5,
 	)
 	defer cancel()
 
-	conn, err := grpc.Dial(os.Getenv("API_ADDRESS"), grpc.WithInsecure(), grpc.WithBlock())
+	conn, err := grpc.Dial(
+		os.Getenv("API_ADDRESS"),
+		grpc.WithInsecure(),
+		grpc.WithBlock(),
+		grpc.WithTimeout(time.Second*5),
+	)
 	if err != nil {
-		log.Fatal("API Server Connection Failed", err)
+		log.Print("API Server Connection Failed: ", err)
 		return &pb.AccountInfo{}, err
 	}
 	defer conn.Close()
+
 	client := pb.NewAccountServicesClient(conn)
+
 	req := &pb.GetAccountInfoRequest{SessionToken: token}
 	res, err := client.GetAccountInfo(ctx, req)
 	if err != nil {
+		log.Print("API Server Returned Error: ", err)
 		return &pb.AccountInfo{}, err
 	}
+
 	return res.GetAccountInfo(), nil
 }
 
@@ -37,7 +50,6 @@ func GetId(token string) (string, error) {
 		return "", err
 	}
 	id := res.GetId()
-
 	return id, nil
 }
 

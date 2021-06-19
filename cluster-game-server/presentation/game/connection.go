@@ -15,8 +15,9 @@ func (g *GameService) Connect(ctx context.Context, in *pb.ConnectionRequest) (*p
 	token := in.GetSessionToken()
 	success, err := auth.AuthToken(token)
 	if err != nil {
-		return nil, err
+		return &pb.ConnectionResponse{}, status.Errorf(codes.Internal, "Token Authentication Failed: ", err.Error())
 	}
+
 	if !success {
 		return &pb.ConnectionResponse{
 			Status: pb.ConnectionStatusEnum_CONNECTION_FAIL,
