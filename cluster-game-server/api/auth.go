@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"log"
-	"os"
 	"time"
 
 	account "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/model/account"
@@ -21,7 +20,7 @@ func getAccountInfo(token string) (*pb.AccountInfo, error) {
 	defer cancel()
 
 	conn, err := grpc.Dial(
-		os.Getenv("API_ADDRESS"),
+		"localhost:8080",
 		grpc.WithInsecure(),
 		grpc.WithBlock(),
 		grpc.WithTimeout(time.Second*5),
