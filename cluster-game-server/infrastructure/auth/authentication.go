@@ -1,15 +1,24 @@
 package auth
 
 import (
-	// api "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/api"
+	api "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/api"
 	session "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/session"
 )
 
 // トークンを認証する
 func AuthToken(token string) (bool, error) {
 	//TODO: API叩いてチェック
+	id, err := api.GetId(token)
 
-	//TODO: トークンをセッション処理関数に投げる
+	if err != nil {
+		return false, err
+	}
+
+	// TODO: idがホワイトリストに居るか(ゲームに接続できるユーザーか？)
+	if id == "" {
+		return false, nil
+	}
+
 	session.ActivateSession(token)
 	return true, nil
 }

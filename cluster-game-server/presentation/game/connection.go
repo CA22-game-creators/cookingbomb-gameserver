@@ -46,12 +46,16 @@ func (g *GameService) Disconnect(ctx context.Context, in *pb.ConnectionRequest) 
 
 func (g *GameService) GetConnectionStatus(ctx context.Context, in *pb.ConnectionRequest) (*pb.ConnectionResponse, error) {
 	token := in.GetSessionToken()
-	allow := auth.CheckToken(token)
-	if !allow {
-		return nil, status.Errorf(codes.PermissionDenied, "Token Rejected")
+
+	stats := session.GetSessionStatus(token)
+
+	if stats == pb.ConnectionStatusEnum_CONNECTION_UNSPECIFIED {
+		return &pb.ConnectionResponse{
+			Status: pb.ConnectionStatusEnum_CONNECTION_UNSPECIFIED,
+		}, status.Errorf(codes.NotFound, "Status Not Found")
 	}
 
 	return &pb.ConnectionResponse{
-		Status: session.GetSessionStatus(token),
+		Status: stats,
 	}, nil
 }
