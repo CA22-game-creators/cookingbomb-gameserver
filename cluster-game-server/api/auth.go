@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	errors "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
 	account "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/model/account"
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/api"
 	"google.golang.org/grpc"
@@ -19,7 +20,6 @@ func getAccountInfo(token string) (*pb.AccountInfo, error) {
 		time.Second*5,
 	)
 	defer cancel()
-
 	conn, err := grpc.Dial(
 		os.Getenv("API_ADDRESS"),
 		grpc.WithInsecure(),
@@ -28,7 +28,7 @@ func getAccountInfo(token string) (*pb.AccountInfo, error) {
 	)
 	if err != nil {
 		log.Print("API Server Connection Failed: ", err)
-		return &pb.AccountInfo{}, err
+		return nil, errors.APIConnectionLost()
 	}
 	defer conn.Close()
 
@@ -38,7 +38,7 @@ func getAccountInfo(token string) (*pb.AccountInfo, error) {
 	res, err := client.GetAccountInfo(ctx, req)
 	if err != nil {
 		log.Print("API Server Returned Error: ", err)
-		return &pb.AccountInfo{}, err
+		return nil, errors.AuthAPIThrowError()
 	}
 
 	return res.GetAccountInfo(), nil

@@ -3,28 +3,36 @@ package game
 import (
 	"context"
 
+	errors "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
 	auth "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/auth"
 	session "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/session"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	validator "github.com/CA22-game-creators/cookingbomb-proto/server/validation"
 
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/game"
 )
 
 func (g *GameService) Connect(ctx context.Context, in *pb.ConnectionRequest) (*pb.ConnectionResponse, error) {
+
+	if err := validator.Validate(in); err != nil {
+		return nil, errors.InvalidArgument()
+	}
+
 	token := in.GetSessionToken()
 	success, err := auth.AuthToken(token)
 	if err != nil {
-		return &pb.ConnectionResponse{}, status.Errorf(codes.Internal, "Token Authentication Failed: ", err.Error())
+		return &pb.ConnectionResponse{}, err
 	}
 
 	if !success {
 		return &pb.ConnectionResponse{
 			Status: pb.ConnectionStatusEnum_CONNECTION_FAIL,
-		}, status.Errorf(codes.PermissionDenied, "Token Rejected")
+		}, errors.Unauthorized()
 	}
 
-	session.ActivateSession(token)
+	err = session.ActivateSession(token)
+	if err != nil {
+		return nil, err
+	}
 
 	return &pb.ConnectionResponse{
 		Status: session.GetSessionStatus(token),
@@ -32,13 +40,22 @@ func (g *GameService) Connect(ctx context.Context, in *pb.ConnectionRequest) (*p
 }
 
 func (g *GameService) Disconnect(ctx context.Context, in *pb.ConnectionRequest) (*pb.ConnectionResponse, error) {
+
+	if err := validator.Validate(in); err != nil {
+		return nil, errors.InvalidArgument()
+	}
+
 	token := in.GetSessionToken()
 	allow := auth.CheckToken(token)
 	if !allow {
-		return nil, status.Errorf(codes.PermissionDenied, "Token Rejected")
+		return nil, errors.SessionNotActive()
 	}
 
-	session.EndSessionByClient(token)
+	err := session.EndSessionByClient(token)
+
+	if err != nil {
+		return nil, err
+	}
 
 	return &pb.ConnectionResponse{
 		Status: session.GetSessionStatus(token),
@@ -46,14 +63,17 @@ func (g *GameService) Disconnect(ctx context.Context, in *pb.ConnectionRequest) 
 }
 
 func (g *GameService) GetConnectionStatus(ctx context.Context, in *pb.ConnectionRequest) (*pb.ConnectionResponse, error) {
+
+	if err := validator.Validate(in); err != nil {
+		return nil, errors.InvalidArgument()
+	}
+
 	token := in.GetSessionToken()
 
 	stats := session.GetSessionStatus(token)
 
 	if stats == pb.ConnectionStatusEnum_CONNECTION_UNSPECIFIED {
-		return &pb.ConnectionResponse{
-			Status: pb.ConnectionStatusEnum_CONNECTION_UNSPECIFIED,
-		}, status.Errorf(codes.NotFound, "Status Not Found")
+		return nil, errors.NoStatusFound()
 	}
 
 	return &pb.ConnectionResponse{
