@@ -30,5 +30,5 @@ func APIConnectionLost() error {
 }
 
 func NoStatusFound() error {
-	return status.Error(codes.NotFound, "No Status Found")
+	return status.Error(codes.NotFound, "No Connection Status Found")
 }

@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"flag"
 	"log"
 	"os"
 	"time"
@@ -14,6 +15,16 @@ import (
 
 func getAccountInfo(token string) (*pb.AccountInfo, error) {
 	// TODO: タイムアウトの検討: 5秒
+
+	if flag.Lookup("test.v") != nil {
+		if token == "invalid" {
+			return nil, errors.AuthAPIThrowError()
+		}
+		return &pb.AccountInfo{
+			Id:   "00000000-0000-0000-0000-000000000000",
+			Name: "Test Name",
+		}, nil
+	}
 
 	ctx, cancel := context.WithTimeout(
 		context.Background(),

@@ -11,6 +11,10 @@ build:
 .PHONY: build-run
 build-run: build run
 
+.PHONY: test
+test:
+	$(ENV_LOCAL) go test ./test/... -count=1
+	
 .PHONY: build-env
 build-env:
 	if [ `docker network ls | grep shared-local |wc -l` -eq 0 ]; then docker network create shared-local; fi

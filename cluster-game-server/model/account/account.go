@@ -5,13 +5,13 @@ import (
 )
 
 type Account struct {
-	id   string
-	name string
+	Id   string
+	Name string
 }
 
 func NewFromAPIResponce(res *pb.AccountInfo) Account {
 	return Account{
-		id:   res.GetId(),
-		name: res.GetName(),
+		Id:   res.GetId(),
+		Name: res.GetName(),
 	}
 }

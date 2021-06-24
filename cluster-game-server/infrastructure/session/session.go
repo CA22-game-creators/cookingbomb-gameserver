@@ -28,7 +28,7 @@ func ActivateSession(token string) error {
 	if CheckSessionActive(token) {
 		return errors.InvalidOperation()
 	}
-	s := session.Session{Status: pb.ConnectionStatusEnum_CONNECTING}
+	s := session.Session{Status: pb.ConnectionStatusEnum_CONNECTED}
 	cacheInstance.SetValue(token, s)
 	return nil
 }
@@ -55,4 +55,8 @@ func EndSessionByClient(token string) error {
 func ForceEndSession(token string) {
 	s := session.Session{Status: pb.ConnectionStatusEnum_DISCONNECTED}
 	cacheInstance.SetValueWithExpiration(token, s)
+}
+
+func ClearSession() {
+	cacheInstance.cache.Flush()
 }

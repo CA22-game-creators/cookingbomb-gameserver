@@ -13,5 +13,5 @@ func (u *Session) GetStatus() pb.ConnectionStatusEnum {
 }
 
 func (u *Session) IsActive() bool {
-	return u.Status == pb.ConnectionStatusEnum_CONNECTING
+	return u.Status == pb.ConnectionStatusEnum_CONNECTED
 }
