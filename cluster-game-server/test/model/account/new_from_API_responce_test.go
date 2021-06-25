@@ -13,26 +13,26 @@ func TestGetStatus(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		input    pb.AccountInfo
+		input    *pb.AccountInfo
 		expected account.Account
 	}{
 		{
-			input: pb.AccountInfo{
+			input: &pb.AccountInfo{
 				Id:   "550e8400-e29b-41d4-a716-446655440000",
 				Name: "Test User",
 			},
 			expected: account.Account{
-				Id:   "550e8400-e29b-41d4-a716-446655440000",
+				ID:   "550e8400-e29b-41d4-a716-446655440000",
 				Name: "Test User",
 			},
 		},
 		{
-			input: pb.AccountInfo{
+			input: &pb.AccountInfo{
 				Id:   "00000000-0000-0000-0000-000000000000",
 				Name: "日本語",
 			},
 			expected: account.Account{
-				Id:   "00000000-0000-0000-0000-000000000000",
+				ID:   "00000000-0000-0000-0000-000000000000",
 				Name: "日本語",
 			},
 		},
@@ -44,7 +44,7 @@ func TestGetStatus(t *testing.T) {
 		t.Run("NewFromAPIResponce: "+td.input.String(), func(t *testing.T) {
 			t.Parallel()
 
-			output := account.NewFromAPIResponce(&td.input)
+			output := account.NewFromAPIResponce(td.input)
 
 			assert.Equal(t, td.expected, output)
 		})

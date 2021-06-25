@@ -14,7 +14,7 @@ func CheckTokenPermission(token string) (bool, error) {
 		return false, err
 	}
 
-	id := account.Id
+	id := account.ID
 	// TODO: idがホワイトリストに居るか(ゲームに接続できるユーザーか？)
 	if id == "" {
 		return false, nil
