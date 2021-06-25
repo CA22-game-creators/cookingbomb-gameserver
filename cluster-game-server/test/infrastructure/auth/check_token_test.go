@@ -25,7 +25,7 @@ func TestCheckToken(t *testing.T) {
 		{
 			title: "[正常]正常なトークンの確認",
 			before: func() {
-				auth.AuthToken(token.SessionToken.Valid)
+				session.ActivateSession(token.SessionToken.Valid)
 			},
 			after: func() {
 				session.ClearSession()
@@ -50,19 +50,19 @@ func TestCheckToken(t *testing.T) {
 			after: func() {
 				session.ClearSession()
 			},
-			input:    token.SessionToken.Valid2,
+			input:    token.SessionToken.Valid,
 			expected: false,
 		},
 		{
 			title: "[異常]切断済みのトークンの確認",
 			before: func() {
-				auth.AuthToken(token.SessionToken.Valid3)
-				session.ForceEndSession(token.SessionToken.Valid3)
+				session.ActivateSession(token.SessionToken.Valid)
+				session.ForceEndSession(token.SessionToken.Valid)
 			},
 			after: func() {
 				session.ClearSession()
 			},
-			input:    token.SessionToken.Valid3,
+			input:    token.SessionToken.Valid,
 			expected: false,
 		},
 	}

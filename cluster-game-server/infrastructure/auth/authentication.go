@@ -19,7 +19,6 @@ func AuthToken(token string) (bool, error) {
 		return false, nil
 	}
 
-	session.ActivateSession(token)
 	return true, nil
 }
 

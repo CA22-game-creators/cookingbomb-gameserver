@@ -13,6 +13,7 @@ import (
 
 func (g *GameService) Connect(ctx context.Context, in *pb.ConnectionRequest) (*pb.ConnectionResponse, error) {
 
+	//TODO: VALIDATE
 	if err := validator.Validate(in); err != nil {
 		return nil, errors.InvalidArgument()
 	}
@@ -20,13 +21,11 @@ func (g *GameService) Connect(ctx context.Context, in *pb.ConnectionRequest) (*p
 	token := in.GetSessionToken()
 	success, err := auth.AuthToken(token)
 	if err != nil {
-		return &pb.ConnectionResponse{}, err
+		return nil, err
 	}
 
 	if !success {
-		return &pb.ConnectionResponse{
-			Status: pb.ConnectionStatusEnum_CONNECTION_FAIL,
-		}, errors.Unauthorized()
+		return nil, errors.Unauthorized()
 	}
 
 	err = session.ActivateSession(token)

@@ -6,7 +6,7 @@ import (
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/game"
 )
 
-var cacheInstance *SessionInstance = New()
+var cacheInstance = New()
 
 func CheckSessionActive(token string) bool {
 	v, found := cacheInstance.GetValue(token)
@@ -58,5 +58,5 @@ func ForceEndSession(token string) {
 }
 
 func ClearSession() {
-	cacheInstance.cache.Flush()
+	cacheInstance.Flush()
 }
