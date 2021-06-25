@@ -1,4 +1,4 @@
 package game
 
-type GameService struct {
+type Service struct {
 }

@@ -17,7 +17,7 @@ func TestGetConnectionStatus(t *testing.T) {
 	session.ClearSession()
 	ctx := context.TODO()
 
-	gs := controller.GameService{}
+	gs := controller.Service{}
 
 	tests := []struct {
 		title   string

@@ -43,7 +43,7 @@ func TestConnect(t *testing.T) {
 		},
 	}
 
-	gs := controller.GameService{}
+	gs := controller.Service{}
 
 	for _, td := range tests {
 		td := td

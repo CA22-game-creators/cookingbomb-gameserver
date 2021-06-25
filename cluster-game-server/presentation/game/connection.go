@@ -11,7 +11,7 @@ import (
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/game"
 )
 
-func (g *GameService) Connect(ctx context.Context, in *pb.ConnectionRequest) (*pb.ConnectionResponse, error) {
+func (g *Service) Connect(ctx context.Context, in *pb.ConnectionRequest) (*pb.ConnectionResponse, error) {
 
 	//TODO: VALIDATE
 	if err := validator.Validate(in); err != nil {
@@ -38,7 +38,7 @@ func (g *GameService) Connect(ctx context.Context, in *pb.ConnectionRequest) (*p
 	}, nil
 }
 
-func (g *GameService) Disconnect(ctx context.Context, in *pb.ConnectionRequest) (*pb.ConnectionResponse, error) {
+func (g *Service) Disconnect(ctx context.Context, in *pb.ConnectionRequest) (*pb.ConnectionResponse, error) {
 
 	if err := validator.Validate(in); err != nil {
 		return nil, errors.InvalidArgument()
@@ -61,7 +61,7 @@ func (g *GameService) Disconnect(ctx context.Context, in *pb.ConnectionRequest) 
 	}, nil
 }
 
-func (g *GameService) GetConnectionStatus(ctx context.Context, in *pb.ConnectionRequest) (*pb.ConnectionResponse, error) {
+func (g *Service) GetConnectionStatus(ctx context.Context, in *pb.ConnectionRequest) (*pb.ConnectionResponse, error) {
 
 	if err := validator.Validate(in); err != nil {
 		return nil, errors.InvalidArgument()

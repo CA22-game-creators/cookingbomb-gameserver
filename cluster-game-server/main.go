@@ -23,7 +23,7 @@ func main() {
 	log.Printf("Listening :%s", os.Getenv("PORT"))
 
 	grpcServer := grpc.NewServer()
-	service := &controller.GameService{}
+	service := &controller.Service{}
 	pb.RegisterGameServicesServer(grpcServer, service)
 	reflection.Register(grpcServer)
 
