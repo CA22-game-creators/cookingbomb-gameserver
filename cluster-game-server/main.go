@@ -13,8 +13,6 @@ import (
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/game"
 )
 
-type game struct{}
-
 func main() {
 	listen, err := net.Listen("tcp", fmt.Sprintf(":%s", os.Getenv("PORT")))
 
