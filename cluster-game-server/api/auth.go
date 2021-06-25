@@ -21,7 +21,7 @@ func GetAccountInfo(token string) (account.Account, error) {
 			return account.Account{}, errors.AuthAPIThrowError()
 		}
 		return account.Account{
-			Id:   "00000000-0000-0000-0000-000000000000",
+			ID:   "00000000-0000-0000-0000-000000000000",
 			Name: "Test Name",
 		}, nil
 	}
