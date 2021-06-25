@@ -25,7 +25,7 @@ func TestCheckToken(t *testing.T) {
 		{
 			title: "[正常]正常なトークンの確認",
 			before: func() {
-				session.ActivateSession(token.SessionToken.Valid)
+				_ = session.ActivateSession(token.SessionToken.Valid)
 			},
 			after: func() {
 				session.ClearSession()
@@ -56,7 +56,7 @@ func TestCheckToken(t *testing.T) {
 		{
 			title: "[異常]切断済みのトークンの確認",
 			before: func() {
-				session.ActivateSession(token.SessionToken.Valid)
+				_ = session.ActivateSession(token.SessionToken.Valid)
 				session.ForceEndSession(token.SessionToken.Valid)
 			},
 			after: func() {

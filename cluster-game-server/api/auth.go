@@ -35,7 +35,6 @@ func GetAccountInfo(token string) (account.Account, error) {
 		os.Getenv("API_ADDRESS"),
 		grpc.WithInsecure(),
 		grpc.WithBlock(),
-		grpc.WithTimeout(time.Second*5),
 	)
 	if err != nil {
 		log.Print("API Server Connection Failed: ", err)
