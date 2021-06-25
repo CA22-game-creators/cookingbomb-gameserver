@@ -42,6 +42,15 @@ func TestDiconnect(t *testing.T) {
 			},
 			connect: false,
 			expect1: nil,
+			expect2: errors.SessionNotActive(),
+		},
+		{
+			title: "[異常]異常なトークンで切断",
+			input: &pb.ConnectionRequest{
+				SessionToken: token.SessionToken.Invalid,
+			},
+			connect: false,
+			expect1: nil,
 			expect2: errors.SessionNotActive(), // TODO: 本来バリデーションで弾かれる errors.InvalidArgument
 		},
 	}
