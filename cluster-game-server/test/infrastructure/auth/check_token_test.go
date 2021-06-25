@@ -72,7 +72,7 @@ func TestCheckToken(t *testing.T) {
 
 		t.Run(td.title, func(t *testing.T) {
 			td.before()
-			output := auth.CheckToken(td.input)
+			output := auth.CheckSession(td.input)
 
 			assert.Equal(t, td.expected, output)
 			td.after()

@@ -39,7 +39,7 @@ func TestAuthToken(t *testing.T) {
 		t.Run(td.title, func(t *testing.T) {
 			t.Parallel()
 
-			output1, output2 := auth.AuthToken(td.input)
+			output1, output2 := auth.CheckTokenPermission(td.input)
 
 			assert.Equal(t, td.expected1, output1)
 			assert.Equal(t, td.expected2, output2)

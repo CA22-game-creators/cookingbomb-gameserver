@@ -6,7 +6,7 @@ import (
 )
 
 // トークンを認証する
-func AuthToken(token string) (bool, error) {
+func CheckTokenPermission(token string) (bool, error) {
 	//TODO: API叩いてチェック
 	account, err := api.GetAccountInfo(token)
 
@@ -24,6 +24,6 @@ func AuthToken(token string) (bool, error) {
 }
 
 // トークンを検証する
-func CheckToken(token string) bool {
+func CheckSession(token string) bool {
 	return session.CheckSessionActive(token)
 }

@@ -19,7 +19,7 @@ func (g *GameService) Connect(ctx context.Context, in *pb.ConnectionRequest) (*p
 	}
 
 	token := in.GetSessionToken()
-	success, err := auth.AuthToken(token)
+	success, err := auth.CheckTokenPermission(token)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (g *GameService) Disconnect(ctx context.Context, in *pb.ConnectionRequest) 
 	}
 
 	token := in.GetSessionToken()
-	allow := auth.CheckToken(token)
+	allow := auth.CheckSession(token)
 	if !allow {
 		return nil, errors.SessionNotActive()
 	}
