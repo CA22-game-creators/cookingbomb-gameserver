@@ -11,5 +11,5 @@ func TestGetStatus(t *testing.T) {
 	t.Parallel()
 
 	instance := session.New()
-	assert.IsType(t, &session.SessionInstance{}, instance)
+	assert.IsType(t, &session.Instance{}, instance)
 }

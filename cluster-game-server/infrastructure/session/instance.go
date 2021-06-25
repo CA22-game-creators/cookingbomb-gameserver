@@ -7,18 +7,18 @@ import (
 	"github.com/patrickmn/go-cache"
 )
 
-type SessionInstance struct {
+type Instance struct {
 	cache *cache.Cache
 }
 
-func New() *SessionInstance {
-	var instance = &SessionInstance{
+func New() *Instance {
+	var instance = &Instance{
 		cache: cache.New(30*time.Minute, 30*time.Second),
 	}
 	return instance
 }
 
-func (instance SessionInstance) GetValue(token string) (session.Session, bool) {
+func (instance Instance) GetValue(token string) (session.Session, bool) {
 	cv, found := instance.cache.Get(token)
 	if found {
 		return cv.(session.Session), true
@@ -26,7 +26,7 @@ func (instance SessionInstance) GetValue(token string) (session.Session, bool) {
 	return session.Session{}, false
 }
 
-func (instance SessionInstance) GetValueWithEcpiration(token string) (session.Session, time.Time, bool) {
+func (instance Instance) GetValueWithEcpiration(token string) (session.Session, time.Time, bool) {
 	cv, t, found := instance.cache.GetWithExpiration(token)
 	if found {
 		return cv.(session.Session), t, true
@@ -34,14 +34,14 @@ func (instance SessionInstance) GetValueWithEcpiration(token string) (session.Se
 	return session.Session{}, t, false
 }
 
-func (instance SessionInstance) SetValue(token string, value session.Session) {
+func (instance Instance) SetValue(token string, value session.Session) {
 	instance.cache.Set(token, value, cache.NoExpiration)
 }
 
-func (instance SessionInstance) SetValueWithExpiration(token string, value session.Session) {
+func (instance Instance) SetValueWithExpiration(token string, value session.Session) {
 	instance.cache.Set(token, value, cache.DefaultExpiration)
 }
 
-func (instance SessionInstance) Flush() {
+func (instance Instance) Flush() {
 	instance.cache.Flush()
 }
