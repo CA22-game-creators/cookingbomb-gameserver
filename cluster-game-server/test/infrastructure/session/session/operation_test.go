@@ -26,7 +26,7 @@ func TestGetValue(t *testing.T) {
 		{
 			title: "[正常]セッションを有効化",
 			before: func() {
-				session.ActivateSession(token.SessionToken.Valid)
+				_ = session.ActivateSession(token.SessionToken.Valid)
 			},
 			after: func() {
 				session.ClearSession()
@@ -38,7 +38,7 @@ func TestGetValue(t *testing.T) {
 		{
 			title: "[正常]セッションを有効化後サーバーにより切断",
 			before: func() {
-				session.ActivateSession(token.SessionToken.Valid)
+				_ = session.ActivateSession(token.SessionToken.Valid)
 			},
 			test: func(t *testing.T) {
 				err := session.EndSessionByServer(token.SessionToken.Valid)
@@ -54,7 +54,7 @@ func TestGetValue(t *testing.T) {
 		{
 			title: "[正常]セッションを有効化後クライアントにより切断",
 			before: func() {
-				session.ActivateSession(token.SessionToken.Valid)
+				_ = session.ActivateSession(token.SessionToken.Valid)
 			},
 			test: func(t *testing.T) {
 				err := session.EndSessionByClient(token.SessionToken.Valid)
@@ -70,7 +70,7 @@ func TestGetValue(t *testing.T) {
 		{
 			title: "[正常]セッションを有効化後強制的に切断",
 			before: func() {
-				session.ActivateSession(token.SessionToken.Valid)
+				_ = session.ActivateSession(token.SessionToken.Valid)
 				session.ForceEndSession(token.SessionToken.Valid)
 			},
 			after: func() {
@@ -83,9 +83,9 @@ func TestGetValue(t *testing.T) {
 		{
 			title: "[正常]セッションを有効化後強制切断し、再度接続",
 			before: func() {
-				session.ActivateSession(token.SessionToken.Valid)
+				_ = session.ActivateSession(token.SessionToken.Valid)
 				session.ForceEndSession(token.SessionToken.Valid)
-				session.ActivateSession(token.SessionToken.Valid)
+				_ = session.ActivateSession(token.SessionToken.Valid)
 			},
 			after: func() {
 				session.ClearSession()
@@ -97,7 +97,7 @@ func TestGetValue(t *testing.T) {
 		{
 			title: "[正常]セッションを有効化後、全セッション削除",
 			before: func() {
-				session.ActivateSession(token.SessionToken.Valid)
+				_ = session.ActivateSession(token.SessionToken.Valid)
 				session.ClearSession()
 			},
 			after: func() {
@@ -121,7 +121,7 @@ func TestGetValue(t *testing.T) {
 		{
 			title: "[異常]すでに接続済みのセッションを、再度有効化処理",
 			before: func() {
-				session.ActivateSession(token.SessionToken.Valid)
+				_ = session.ActivateSession(token.SessionToken.Valid)
 			},
 			test: func(t *testing.T) {
 				err := session.ActivateSession(token.SessionToken.Valid)
@@ -137,7 +137,7 @@ func TestGetValue(t *testing.T) {
 		{
 			title: "[異常]すでに切断済みのセッションを、再度切断処理",
 			before: func() {
-				session.ActivateSession(token.SessionToken.Valid)
+				_ = session.ActivateSession(token.SessionToken.Valid)
 				session.ForceEndSession(token.SessionToken.Valid)
 			},
 			test: func(t *testing.T) {

@@ -32,7 +32,7 @@ func TestGetConnectionStatus(t *testing.T) {
 				SessionToken: token.SessionToken.Valid,
 			},
 			before: func(t *testing.T, input *pb.ConnectionRequest) {
-				gs.Connect(ctx, input)
+				_, _ = gs.Connect(ctx, input)
 			},
 			expect1: &pb.ConnectionResponse{
 				Status: pb.ConnectionStatusEnum_CONNECTED,

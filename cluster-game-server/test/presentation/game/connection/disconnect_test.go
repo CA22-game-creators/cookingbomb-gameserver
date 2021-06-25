@@ -63,7 +63,7 @@ func TestDiconnect(t *testing.T) {
 		t.Run(td.title, func(t *testing.T) {
 			session.ClearSession()
 			if td.connect {
-				gs.Connect(ctx, td.input)
+				_, _ = gs.Connect(ctx, td.input)
 			}
 			output1, output2 := gs.Disconnect(ctx, td.input)
 
