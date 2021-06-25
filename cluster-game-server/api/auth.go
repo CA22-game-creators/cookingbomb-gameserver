@@ -13,14 +13,14 @@ import (
 	"google.golang.org/grpc"
 )
 
-func getAccountInfo(token string) (*pb.AccountInfo, error) {
+func GetAccountInfo(token string) (account.Account, error) {
 	// TODO: タイムアウトの検討: 5秒
 
 	if flag.Lookup("test.v") != nil {
 		if token == "invalid" {
-			return nil, errors.AuthAPIThrowError()
+			return account.Account{}, errors.AuthAPIThrowError()
 		}
-		return &pb.AccountInfo{
+		return account.Account{
 			Id:   "00000000-0000-0000-0000-000000000000",
 			Name: "Test Name",
 		}, nil
@@ -39,7 +39,7 @@ func getAccountInfo(token string) (*pb.AccountInfo, error) {
 	)
 	if err != nil {
 		log.Print("API Server Connection Failed: ", err)
-		return nil, errors.APIConnectionLost()
+		return account.Account{}, errors.APIConnectionLost()
 	}
 	defer conn.Close()
 
@@ -49,25 +49,9 @@ func getAccountInfo(token string) (*pb.AccountInfo, error) {
 	res, err := client.GetAccountInfo(ctx, req)
 	if err != nil {
 		log.Print("API Server Returned Error: ", err)
-		return nil, errors.AuthAPIThrowError()
+		return account.Account{}, errors.AuthAPIThrowError()
 	}
 
-	return res.GetAccountInfo(), nil
-}
-
-func GetId(token string) (string, error) {
-	res, err := getAccountInfo(token)
-	if err != nil {
-		return "", err
-	}
-	id := res.GetId()
-	return id, nil
-}
-
-func GetAccount(token string) (account.Account, error) {
-	res, err := getAccountInfo(token)
-	if err != nil {
-		return account.Account{}, err
-	}
-	return account.NewFromAPIResponce(res), nil
+	ac := account.NewFromAPIResponce(res.GetAccountInfo())
+	return ac, nil
 }

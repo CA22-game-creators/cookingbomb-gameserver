@@ -8,12 +8,13 @@ import (
 // トークンを認証する
 func AuthToken(token string) (bool, error) {
 	//TODO: API叩いてチェック
-	id, err := api.GetId(token)
+	account, err := api.GetAccountInfo(token)
 
 	if err != nil {
 		return false, err
 	}
 
+	id := account.Id
 	// TODO: idがホワイトリストに居るか(ゲームに接続できるユーザーか？)
 	if id == "" {
 		return false, nil
