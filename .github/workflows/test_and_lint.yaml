@@ -7,15 +7,22 @@ on:
       - "**.md"
 
 jobs:
-  # TODO test
-  lint:
-    name: Lint
+  ci:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.29
-          working-directory: ./cluster-game-server
-          args: --enable=golint,gosec,prealloc,gocognit
+    - name: Set up Go 1.16
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Run golangci-lint
+      uses: golangci/golangci-lint-action@v2
+      with:
+        version: v1.29
+        args: --enable=gosec,prealloc,gocognit
+
+    - name: Run test
+      run: make test
