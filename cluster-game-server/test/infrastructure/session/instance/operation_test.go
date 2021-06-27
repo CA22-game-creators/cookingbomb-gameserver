@@ -92,7 +92,7 @@ func TestGetValue(t *testing.T) {
 			test: func(t *testing.T) {
 				output1, output2, output3 := instance.GetValueWithEcpiration(token.SessionToken.Valid)
 				assert.Equal(t, output1, s)
-				dur := -time.Until(output2)
+				dur := time.Until(output2)
 				assert.GreaterOrEqual(t, dur, time.Minute*25)
 				assert.LessOrEqual(t, dur, time.Minute*30)
 				assert.True(t, output3)
@@ -126,7 +126,7 @@ func TestGetValue(t *testing.T) {
 			test: func(t *testing.T) {
 				output1, output2, output3 := instance.GetValueWithEcpiration(token.SessionToken.Valid)
 				assert.Equal(t, s2, output1)
-				dur := -time.Until(output2)
+				dur := time.Until(output2)
 				assert.GreaterOrEqual(t, dur, time.Minute*25)
 				assert.LessOrEqual(t, dur, time.Minute*30)
 				assert.True(t, output3)
