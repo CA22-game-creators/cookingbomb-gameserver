@@ -20,12 +20,11 @@ jobs:
 
     - name: Run golangci-lint
       uses: golangci/golangci-lint-action@v2
-      working-directory: ./cluster-game-server
       with:
         version: v1.29
+        working-directory: ./cluster-game-server
         args: --enable=gosec,prealloc,gocognit
 
     - name: Run test
       run: make test
       working-directory: ./cluster-game-server
-      
