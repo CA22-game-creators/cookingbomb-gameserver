@@ -2,7 +2,6 @@ package auth
 
 import (
 	api "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/api"
-	session "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/session"
 )
 
 // トークンを認証する
@@ -21,9 +20,4 @@ func CheckTokenPermission(token string) (bool, error) {
 	}
 
 	return true, nil
-}
-
-// トークンを検証する
-func CheckSession(token string) bool {
-	return session.CheckSessionActive(token)
 }

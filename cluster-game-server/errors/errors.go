@@ -21,8 +21,8 @@ func InvalidOperation() error {
 	return status.Error(codes.FailedPrecondition, "Operation is Invalid")
 }
 
-func InvalidArgument() error {
-	return status.Error(codes.InvalidArgument, "Invalid Argument Found")
+func InvalidArgument(err error) error {
+	return status.Error(codes.InvalidArgument, "Invalid Argument Found: "+err.Error())
 }
 
 func APIConnectionLost() error {

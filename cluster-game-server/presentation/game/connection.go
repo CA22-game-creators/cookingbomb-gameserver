@@ -3,19 +3,18 @@ package game
 import (
 	"context"
 
-	errors "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
-	auth "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/auth"
-	session "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/session"
-	validator "github.com/CA22-game-creators/cookingbomb-proto/server/validation"
-
+	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/auth"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/session"
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/game"
+	validator "github.com/CA22-game-creators/cookingbomb-proto/server/validation"
 )
 
 func (g *Service) Connect(ctx context.Context, in *pb.ConnectionRequest) (*pb.ConnectionResponse, error) {
 
 	//TODO: VALIDATE
 	if err := validator.Validate(in); err != nil {
-		return nil, errors.InvalidArgument()
+		return nil, errors.InvalidArgument(err)
 	}
 
 	token := in.GetSessionToken()
@@ -41,18 +40,16 @@ func (g *Service) Connect(ctx context.Context, in *pb.ConnectionRequest) (*pb.Co
 func (g *Service) Disconnect(ctx context.Context, in *pb.ConnectionRequest) (*pb.ConnectionResponse, error) {
 
 	if err := validator.Validate(in); err != nil {
-		return nil, errors.InvalidArgument()
+		return nil, errors.InvalidArgument(err)
 	}
 
 	token := in.GetSessionToken()
-	allow := auth.CheckSession(token)
+	allow := session.CheckSessionActive(token)
 	if !allow {
 		return nil, errors.SessionNotActive()
 	}
 
-	err := session.EndSessionByClient(token)
-
-	if err != nil {
+	if err := session.EndSessionByClient(token); err != nil {
 		return nil, err
 	}
 
@@ -64,18 +61,18 @@ func (g *Service) Disconnect(ctx context.Context, in *pb.ConnectionRequest) (*pb
 func (g *Service) GetConnectionStatus(ctx context.Context, in *pb.ConnectionRequest) (*pb.ConnectionResponse, error) {
 
 	if err := validator.Validate(in); err != nil {
-		return nil, errors.InvalidArgument()
+		return nil, errors.InvalidArgument(err)
 	}
 
 	token := in.GetSessionToken()
 
-	stats := session.GetSessionStatus(token)
+	status := session.GetSessionStatus(token)
 
-	if stats == pb.ConnectionStatusEnum_CONNECTION_UNSPECIFIED {
+	if status == pb.ConnectionStatusEnum_CONNECTION_UNSPECIFIED {
 		return nil, errors.NoStatusFound()
 	}
 
 	return &pb.ConnectionResponse{
-		Status: stats,
+		Status: status,
 	}, nil
 }

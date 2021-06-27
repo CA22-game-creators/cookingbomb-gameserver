@@ -1,8 +1,8 @@
 package session
 
 import (
-	errors "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
-	session "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/model/session"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/model/session"
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/game"
 )
 

@@ -7,10 +7,11 @@ import (
 	"os"
 	"time"
 
+	"google.golang.org/grpc"
+
 	errors "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
 	account "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/model/account"
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/api"
-	"google.golang.org/grpc"
 )
 
 func GetAccountInfo(token string) (account.Account, error) {
@@ -51,6 +52,5 @@ func GetAccountInfo(token string) (account.Account, error) {
 		return account.Account{}, errors.AuthAPIThrowError()
 	}
 
-	ac := account.NewFromAPIResponce(res.GetAccountInfo())
-	return ac, nil
+	return account.NewFromAPIResponce(res.GetAccountInfo()), nil
 }

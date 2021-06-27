@@ -3,8 +3,9 @@ package session
 import (
 	"time"
 
-	session "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/model/session"
 	"github.com/patrickmn/go-cache"
+
+	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/model/session"
 )
 
 type Instance struct {
@@ -12,10 +13,9 @@ type Instance struct {
 }
 
 func New() *Instance {
-	var instance = &Instance{
+	return &Instance{
 		cache: cache.New(30*time.Minute, 30*time.Second),
 	}
-	return instance
 }
 
 func (instance Instance) GetValue(token string) (session.Session, bool) {
