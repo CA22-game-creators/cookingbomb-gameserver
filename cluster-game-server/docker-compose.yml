@@ -4,9 +4,19 @@ services:
     build:
       context: .
       dockerfile: ./docker/local/Dockerfile
+    environment:
+      - ENV
+      - PORT
+      - API_ADDRESS
     volumes:
-      - ./:/go/src/github.com/CA22-game-creators/cookingbomb-gameserver
+      - ./:/go/src/github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server
     restart: always
     tty: true
     ports:
       - "8085:8085"
+    networks: 
+      - "shared-local"
+
+networks: 
+  shared-local:
+    external: true
