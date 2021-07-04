@@ -9,6 +9,7 @@ import (
 	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/connect"
 	application2 "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/disconnect"
 	application3 "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/get_connection_status"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/cache"
 	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/repository"
 	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/presentation"
 	"github.com/CA22-game-creators/cookingbomb-proto/server/pb/game"
@@ -17,7 +18,8 @@ import (
 // Injectors from wire.go:
 
 func DI() game.GameServicesServer {
-	repository := infra.New()
+	cacheCache := cache.New()
+	repository := infra.New(cacheCache)
 	inputPort := application.New(repository)
 	applicationInputPort := application2.New(repository)
 	inputPort2 := application3.New(repository)

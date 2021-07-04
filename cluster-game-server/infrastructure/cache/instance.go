@@ -6,4 +6,6 @@ import (
 	"github.com/patrickmn/go-cache"
 )
 
-var Instance *cache.Cache = cache.New(30*time.Minute, 30*time.Second)
+func New() *cache.Cache {
+	return cache.New(30*time.Minute, 30*time.Second)
+}

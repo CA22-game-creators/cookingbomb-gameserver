@@ -12,14 +12,16 @@ import (
 
 	domain "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/account"
 	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
-	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/cache"
 )
 
 type impl struct {
+	instance *goCache.Cache
 }
 
-func New() domain.Repository {
-	return &impl{}
+func New(c *goCache.Cache) domain.Repository {
+	return &impl{
+		instance: c,
+	}
 }
 
 func (i impl) Find(sesisonToken string) (domain.Account, error) {
@@ -54,7 +56,7 @@ func (i impl) Find(sesisonToken string) (domain.Account, error) {
 }
 
 func (i impl) GetStatus(sessionToken string) domain.StatusEnum {
-	status, ok := cache.Instance.Get(sessionToken)
+	status, ok := i.instance.Get(sessionToken)
 	if !ok {
 		return domain.UNSPECIFIED
 	}
@@ -62,9 +64,9 @@ func (i impl) GetStatus(sessionToken string) domain.StatusEnum {
 }
 
 func (i impl) Connect(sessionToken string) {
-	cache.Instance.Set(sessionToken, domain.CONNECTED, goCache.NoExpiration)
+	i.instance.Set(sessionToken, domain.CONNECTED, goCache.NoExpiration)
 }
 
 func (i impl) Disconnect(sessionToken string) {
-	cache.Instance.Set(sessionToken, domain.DISCONNECTED_BY_CLIENT, goCache.NoExpiration)
+	i.instance.Set(sessionToken, domain.DISCONNECTED_BY_CLIENT, goCache.NoExpiration)
 }

@@ -9,6 +9,7 @@ import (
 	connect "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/connect"
 	disconnect "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/disconnect"
 	getConnectionStatus "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/get_connection_status"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/cache"
 	repository "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/repository"
 	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/presentation"
 )
@@ -20,6 +21,7 @@ func DI() pb.GameServicesServer {
 		connect.New,
 		getConnectionStatus.New,
 		repository.New,
+		cache.New,
 	)
 
 	return nil
