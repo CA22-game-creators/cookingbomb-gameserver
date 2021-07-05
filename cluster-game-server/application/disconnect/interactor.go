@@ -17,7 +17,7 @@ func New(r domain.Repository) InputPort {
 
 func (i interactor) Handle(input InputData) OutputData {
 
-	if i.repository.CheckSessionActive(input.SessionToken) {
+	if !i.repository.CheckSessionActive(input.SessionToken) {
 		return OutputData{Err: errors.SessionNotActive()}
 	}
 
