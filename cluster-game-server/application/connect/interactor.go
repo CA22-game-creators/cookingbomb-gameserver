@@ -23,11 +23,11 @@ func (i interactor) Handle(input InputData) OutputData {
 		return OutputData{Err: err}
 	}
 
-	if i.repository.GetStatus(input.SessionToken) == domain.CONNECTED {
+	if i.repository.CheckSessionActive(input.SessionToken) {
 		return OutputData{Err: errors.New("already connected")}
 	}
 
 	i.repository.Connect(input.SessionToken)
 
-	return OutputData{Status: i.repository.GetStatus(input.SessionToken)}
+	return OutputData{Status: i.repository.GetSessionStatus(input.SessionToken)}
 }

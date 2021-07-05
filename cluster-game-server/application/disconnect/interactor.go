@@ -17,11 +17,11 @@ func New(r domain.Repository) InputPort {
 
 func (i interactor) Handle(input InputData) OutputData {
 
-	if i.repository.GetStatus(input.SessionToken) != domain.CONNECTED {
+	if i.repository.CheckSessionActive(input.SessionToken) {
 		return OutputData{Err: errors.SessionNotActive()}
 	}
 
 	i.repository.Disconnect(input.SessionToken)
 
-	return OutputData{Status: i.repository.GetStatus(input.SessionToken)}
+	return OutputData{Status: i.repository.GetSessionStatus(input.SessionToken)}
 }

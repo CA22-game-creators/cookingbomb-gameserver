@@ -55,12 +55,20 @@ func (i impl) Find(sesisonToken string) (domain.Account, error) {
 	), nil
 }
 
-func (i impl) GetStatus(sessionToken string) domain.StatusEnum {
+func (i impl) GetSessionStatus(sessionToken string) domain.StatusEnum {
 	status, ok := i.instance.Get(sessionToken)
 	if !ok {
 		return domain.UNSPECIFIED
 	}
 	return status.(domain.StatusEnum)
+}
+
+func (i impl) CheckSessionActive(sessionToken string) bool {
+	status, ok := i.instance.Get(sessionToken)
+	if !ok {
+		return false
+	}
+	return status == domain.CONNECTED
 }
 
 func (i impl) Connect(sessionToken string) {
