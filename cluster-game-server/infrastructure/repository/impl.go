@@ -45,8 +45,7 @@ func (i impl) Find(sesisonToken string) (domain.Account, error) {
 	req := &pb.GetAccountInfoRequest{SessionToken: sesisonToken}
 	res, err := client.GetAccountInfo(ctx, req)
 	if err != nil || res.GetAccountInfo() == nil {
-		log.Print("API Server Returned Error: ", err)
-		return domain.Account{}, errors.AuthAPIThrowError()
+		return domain.Account{}, errors.AuthAPIThrowError(err.Error())
 	}
 
 	return domain.FromRepository(
