@@ -75,5 +75,5 @@ func (i impl) Connect(sessionToken string) {
 }
 
 func (i impl) Disconnect(sessionToken string) {
-	i.instance.Set(sessionToken, domain.DISCONNECTED_BY_CLIENT, goCache.NoExpiration)
+	i.instance.Set(sessionToken, domain.DISCONNECTED_BY_CLIENT, goCache.DefaultExpiration)
 }
