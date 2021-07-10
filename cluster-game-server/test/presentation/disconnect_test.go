@@ -6,13 +6,13 @@ import (
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/game"
 	"github.com/stretchr/testify/assert"
 
-	connect "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/connect"
+	disconnect "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/disconnect"
 	domain "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/account"
 	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
 	testdata "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/test/testdata/token"
 )
 
-func TestConnect(t *testing.T) {
+func TestDisonnect(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -23,14 +23,14 @@ func TestConnect(t *testing.T) {
 		expected2 error
 	}{
 		{
-			title: "【正常系】セッショントークンからステータスをCONNECTEDにできる",
+			title: "【正常系】セッショントークンからステータスをDISCONNECTEDにできる",
 			before: func(h testHandler) {
-				input := connect.InputData{SessionToken: testdata.SessionToken.Valid}
-				output := connect.OutputData{Status: domain.CONNECTED}
-				h.connect.EXPECT().Handle(input).Return(output)
+				input := disconnect.InputData{SessionToken: testdata.SessionToken.Valid}
+				output := disconnect.OutputData{Status: domain.DISCONNECTED_BY_CLIENT}
+				h.disconnect.EXPECT().Handle(input).Return(output)
 			},
 			input:     &pb.ConnectionRequest{SessionToken: testdata.SessionToken.Valid},
-			expected1: &pb.ConnectionResponse{Status: pb.ConnectionStatusEnum_CONNECTED},
+			expected1: &pb.ConnectionResponse{Status: pb.ConnectionStatusEnum_DISCONNECTED_BY_CLIENT},
 			expected2: nil,
 		},
 		{
@@ -44,7 +44,7 @@ func TestConnect(t *testing.T) {
 	for _, td := range tests {
 		td := td
 
-		t.Run("presentation/Connect:"+td.title, func(t *testing.T) {
+		t.Run("presentation/Disonnect:"+td.title, func(t *testing.T) {
 			t.Parallel()
 
 			var tester testHandler
@@ -53,7 +53,7 @@ func TestConnect(t *testing.T) {
 				td.before(tester)
 			}
 
-			actual1, actual2 := tester.controller.Connect(tester.context, td.input)
+			actual1, actual2 := tester.controller.Disconnect(tester.context, td.input)
 			assert.Equal(t, td.expected1, actual1)
 			assert.Equal(t, td.expected2, actual2)
 		})
