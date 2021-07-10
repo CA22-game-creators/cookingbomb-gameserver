@@ -1,9 +1,8 @@
 package application
 
 import (
-	"errors"
-
 	domain "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/account"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
 )
 
 type interactor struct {
@@ -23,11 +22,11 @@ func (i interactor) Handle(input InputData) OutputData {
 		return OutputData{Err: err}
 	}
 
-	if i.repository.GetStatus(input.SessionToken) == domain.CONNECTED {
-		return OutputData{Err: errors.New("already connected")}
+	if status := i.repository.GetSessionStatus(input.SessionToken); !status.IsConnectable() {
+		return OutputData{Err: errors.InvalidOperation()}
 	}
 
 	i.repository.Connect(input.SessionToken)
 
-	return OutputData{Status: i.repository.GetStatus(input.SessionToken)}
+	return OutputData{Status: i.repository.GetSessionStatus(input.SessionToken)}
 }

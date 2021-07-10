@@ -5,8 +5,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func AuthAPIThrowError() error {
-	return status.Error(codes.Unauthenticated, "Auth API Rejected Session Token")
+func AuthAPIThrowError(v string) error {
+	return status.Errorf(codes.Unauthenticated, "Auth API Rejected Session Token: %s", v)
 }
 
 func SessionNotActive() error {

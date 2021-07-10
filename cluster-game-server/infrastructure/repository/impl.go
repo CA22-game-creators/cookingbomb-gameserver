@@ -45,8 +45,7 @@ func (i impl) Find(sesisonToken string) (domain.Account, error) {
 	req := &pb.GetAccountInfoRequest{SessionToken: sesisonToken}
 	res, err := client.GetAccountInfo(ctx, req)
 	if err != nil || res.GetAccountInfo() == nil {
-		log.Print("API Server Returned Error: ", err)
-		return domain.Account{}, errors.AuthAPIThrowError()
+		return domain.Account{}, errors.AuthAPIThrowError(err.Error())
 	}
 
 	return domain.FromRepository(
@@ -55,7 +54,7 @@ func (i impl) Find(sesisonToken string) (domain.Account, error) {
 	), nil
 }
 
-func (i impl) GetStatus(sessionToken string) domain.StatusEnum {
+func (i impl) GetSessionStatus(sessionToken string) domain.StatusEnum {
 	status, ok := i.instance.Get(sessionToken)
 	if !ok {
 		return domain.UNSPECIFIED
@@ -68,5 +67,5 @@ func (i impl) Connect(sessionToken string) {
 }
 
 func (i impl) Disconnect(sessionToken string) {
-	i.instance.Set(sessionToken, domain.DISCONNECTED_BY_CLIENT, goCache.NoExpiration)
+	i.instance.Set(sessionToken, domain.DISCONNECTED_BY_CLIENT, goCache.DefaultExpiration)
 }
