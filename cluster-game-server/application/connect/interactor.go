@@ -22,7 +22,7 @@ func (i interactor) Handle(input InputData) OutputData {
 		return OutputData{Err: err}
 	}
 
-	if i.repository.CheckSessionActive(input.SessionToken) {
+	if status := i.repository.GetSessionStatus(input.SessionToken); !status.IsConnectable() {
 		return OutputData{Err: errors.InvalidOperation()}
 	}
 

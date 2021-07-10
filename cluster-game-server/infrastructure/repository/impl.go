@@ -62,14 +62,6 @@ func (i impl) GetSessionStatus(sessionToken string) domain.StatusEnum {
 	return status.(domain.StatusEnum)
 }
 
-func (i impl) CheckSessionActive(sessionToken string) bool {
-	status, ok := i.instance.Get(sessionToken)
-	if !ok {
-		return false
-	}
-	return status == domain.CONNECTED
-}
-
 func (i impl) Connect(sessionToken string) {
 	i.instance.Set(sessionToken, domain.CONNECTED, goCache.NoExpiration)
 }
