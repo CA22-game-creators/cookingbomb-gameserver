@@ -1,4 +1,4 @@
-package application_test
+package application_disconnect_test
 
 import (
 	"testing"
@@ -13,13 +13,13 @@ import (
 	testdata "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/test/testdata/token"
 )
 
-type disconnectTestHandler struct {
+type testHandler struct {
 	disconnect disconnect.InputPort
 
 	repository *mockDomain.MockRepository
 }
 
-func (h *disconnectTestHandler) setupTest(t *testing.T) {
+func (h *testHandler) setupTest(t *testing.T) {
 	ctrl := gomock.NewController(t)
 
 	h.repository = mockDomain.NewMockRepository(ctrl)
@@ -31,13 +31,13 @@ func TestDisconnect(t *testing.T) {
 
 	tests := []struct {
 		title    string
-		before   func(disconnectTestHandler)
+		before   func(testHandler)
 		input    disconnect.InputData
 		expected disconnect.OutputData
 	}{
 		{
 			title: "[正常]接続済みを想定したセッショントークンを処理",
-			before: func(h disconnectTestHandler) {
+			before: func(h testHandler) {
 				status = domain.CONNECTED
 				h.repository.EXPECT().Disconnect(testdata.SessionToken.Valid).Do(func(_ string) interface{} {
 					status = domain.DISCONNECTED_BY_CLIENT
@@ -52,7 +52,7 @@ func TestDisconnect(t *testing.T) {
 		},
 		{
 			title: "[異常]未接続を想定したセッショントークンを処理",
-			before: func(h disconnectTestHandler) {
+			before: func(h testHandler) {
 				status = domain.UNSPECIFIED
 				h.repository.EXPECT().GetSessionStatus(testdata.SessionToken.Valid).DoAndReturn(func(_ string) interface{} {
 					return status
@@ -63,7 +63,7 @@ func TestDisconnect(t *testing.T) {
 		},
 		{
 			title: "[異常]切断済みを想定したセッショントークンを処理",
-			before: func(h disconnectTestHandler) {
+			before: func(h testHandler) {
 				status = domain.DISCONNECTED_BY_CLIENT
 				h.repository.EXPECT().GetSessionStatus(testdata.SessionToken.Valid).DoAndReturn(func(_ string) interface{} {
 					return status
@@ -78,7 +78,7 @@ func TestDisconnect(t *testing.T) {
 		td := td
 
 		t.Run("application/disconnect:"+td.title, func(t *testing.T) {
-			var tester disconnectTestHandler
+			var tester testHandler
 			tester.setupTest(t)
 			if td.before != nil {
 				td.before(tester)

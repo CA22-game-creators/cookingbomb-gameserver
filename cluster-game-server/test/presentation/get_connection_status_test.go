@@ -44,7 +44,7 @@ func TestGetConnectionStatus(t *testing.T) {
 	for _, td := range tests {
 		td := td
 
-		t.Run("presentation/Connect:"+td.title, func(t *testing.T) {
+		t.Run("presentation/GetConnectionStatus:"+td.title, func(t *testing.T) {
 			t.Parallel()
 
 			var tester testHandler
