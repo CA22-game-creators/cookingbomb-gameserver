@@ -1,4 +1,4 @@
-package application_test
+package application_connect_test
 
 import (
 	"testing"
@@ -13,13 +13,13 @@ import (
 	testdata "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/test/testdata/token"
 )
 
-type connectTestHandler struct {
+type testHandler struct {
 	connect connect.InputPort
 
 	repository *mockDomain.MockRepository
 }
 
-func (h *connectTestHandler) setupTest(t *testing.T) {
+func (h *testHandler) setupTest(t *testing.T) {
 	ctrl := gomock.NewController(t)
 
 	h.repository = mockDomain.NewMockRepository(ctrl)
@@ -32,13 +32,13 @@ func TestConnect(t *testing.T) {
 
 	tests := []struct {
 		title    string
-		before   func(connectTestHandler)
+		before   func(testHandler)
 		input    connect.InputData
 		expected connect.OutputData
 	}{
 		{
 			title: "[正常]正常なセッショントークンを処理",
-			before: func(h connectTestHandler) {
+			before: func(h testHandler) {
 				status = domain.UNSPECIFIED
 				h.repository.EXPECT().Find(testdata.SessionToken.Valid).Return(testdata.Account, nil)
 				h.repository.EXPECT().Connect(testdata.SessionToken.Valid).Do(func(_ string) interface{} {
@@ -54,7 +54,7 @@ func TestConnect(t *testing.T) {
 		},
 		{
 			title: "[正常]切断済みを想定したセッショントークンを処理",
-			before: func(h connectTestHandler) {
+			before: func(h testHandler) {
 				status = domain.DISCONNECTED_BY_CLIENT
 				h.repository.EXPECT().Find(testdata.SessionToken.Valid).Return(testdata.Account, nil)
 				h.repository.EXPECT().Connect(testdata.SessionToken.Valid).Do(func(_ string) interface{} {
@@ -70,7 +70,7 @@ func TestConnect(t *testing.T) {
 		},
 		{
 			title: "[異常]接続済みを想定したセッショントークンを処理",
-			before: func(h connectTestHandler) {
+			before: func(h testHandler) {
 				status = domain.CONNECTED
 				h.repository.EXPECT().Find(testdata.SessionToken.Valid).Return(testdata.Account, nil)
 				h.repository.EXPECT().GetSessionStatus(testdata.SessionToken.Valid).DoAndReturn(func(_ string) interface{} {
@@ -82,7 +82,7 @@ func TestConnect(t *testing.T) {
 		},
 		{
 			title: "[異常]無効なセッショントークンを処理",
-			before: func(h connectTestHandler) {
+			before: func(h testHandler) {
 				status = domain.UNSPECIFIED
 				h.repository.EXPECT().Find(testdata.SessionToken.Invalid).Return(domain.Account{}, errors.AuthAPIThrowError("test"))
 			},
@@ -95,7 +95,7 @@ func TestConnect(t *testing.T) {
 		td := td
 
 		t.Run("application/connect:"+td.title, func(t *testing.T) {
-			var tester connectTestHandler
+			var tester testHandler
 			tester.setupTest(t)
 			if td.before != nil {
 				td.before(tester)
