@@ -1,0 +1,57 @@
+package application_test
+
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	connect "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/connect"
+	domain "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/account"
+	testdata "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/test/testdata/token"
+)
+
+func TestConnect(t *testing.T) {
+	t.Parallel()
+	var status domain.StatusEnum
+
+	tests := []struct {
+		title    string
+		before   func(testHandler)
+		input    connect.InputData
+		expected connect.OutputData
+	}{
+		{
+			title: "[正常]正常なセッショントークンを処理",
+			before: func(h testHandler) {
+				status = domain.UNSPECIFIED
+				h.repository.EXPECT().Find(testdata.SessionToken.Valid).Return(testdata.Account, nil)
+				h.repository.EXPECT().Connect(testdata.SessionToken.Valid).Do(func(_ string) interface{} {
+					status = domain.CONNECTED
+					return nil
+				})
+				h.repository.EXPECT().GetSessionStatus(testdata.SessionToken.Valid).DoAndReturn(func(_ string) interface{} {
+					return status
+				}).AnyTimes()
+			},
+			input:    connect.InputData{SessionToken: testdata.SessionToken.Valid},
+			expected: connect.OutputData{Status: domain.CONNECTED},
+		},
+	}
+
+	for _, td := range tests {
+		td := td
+
+		t.Run("application/connect:"+td.title, func(t *testing.T) {
+			t.Parallel()
+
+			var tester testHandler
+			tester.setupTest(t)
+			if td.before != nil {
+				td.before(tester)
+			}
+
+			actual := tester.connect.Handle(td.input)
+			assert.Equal(t, td.expected, actual)
+		})
+	}
+}
