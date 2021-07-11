@@ -6,13 +6,13 @@ import (
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/game"
 	"github.com/stretchr/testify/assert"
 
-	connect "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/connect"
+	getstatus "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/get_connection_status"
 	domain "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/account"
 	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
 	testdata "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/test/testdata/token"
 )
 
-func TestConnect(t *testing.T) {
+func TestGetConnectionStatus(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -23,11 +23,11 @@ func TestConnect(t *testing.T) {
 		expected2 error
 	}{
 		{
-			title: "【正常系】セッショントークンからステータスをCONNECTEDにできる",
+			title: "【正常系】セッショントークンからステータスを取得できる",
 			before: func(h testHandler) {
-				input := connect.InputData{SessionToken: testdata.SessionToken.Valid}
-				output := connect.OutputData{Status: domain.CONNECTED}
-				h.connect.EXPECT().Handle(input).Return(output)
+				input := getstatus.InputData{SessionToken: testdata.SessionToken.Valid}
+				output := getstatus.OutputData{Status: domain.CONNECTED}
+				h.getConnectionStatus.EXPECT().Handle(input).Return(output)
 			},
 			input:     &pb.ConnectionRequest{SessionToken: testdata.SessionToken.Valid},
 			expected1: &pb.ConnectionResponse{Status: pb.ConnectionStatusEnum_CONNECTED},
@@ -44,7 +44,7 @@ func TestConnect(t *testing.T) {
 	for _, td := range tests {
 		td := td
 
-		t.Run("presentation/Connect:"+td.title, func(t *testing.T) {
+		t.Run("presentation/GetConnectionStatus:"+td.title, func(t *testing.T) {
 			t.Parallel()
 
 			var tester testHandler
@@ -53,7 +53,7 @@ func TestConnect(t *testing.T) {
 				td.before(tester)
 			}
 
-			actual1, actual2 := tester.controller.Connect(tester.context, td.input)
+			actual1, actual2 := tester.controller.GetConnectionStatus(tester.context, td.input)
 			assert.Equal(t, td.expected1, actual1)
 			assert.Equal(t, td.expected2, actual2)
 		})
