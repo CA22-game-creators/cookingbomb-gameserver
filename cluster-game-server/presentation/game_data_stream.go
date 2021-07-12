@@ -7,6 +7,7 @@ import (
 )
 
 func (c controller) GameDataStream(stream pb.GameServices_GameDataStreamServer) error {
+
 	input := application.InputData{Stream: stream}
 	c.gameDataStream.Handle(input)
 	return nil
