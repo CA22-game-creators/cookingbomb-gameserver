@@ -8,6 +8,7 @@ package di
 import (
 	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/connect"
 	application2 "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/disconnect"
+	application4 "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/game_data_stream"
 	application3 "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/get_connection_status"
 	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/cache"
 	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/repository"
@@ -23,6 +24,7 @@ func DI() game.GameServicesServer {
 	inputPort := application.New(repository)
 	applicationInputPort := application2.New(repository)
 	inputPort2 := application3.New(repository)
-	gameServicesServer := presentation.New(inputPort, applicationInputPort, inputPort2)
+	inputPort3 := application4.New()
+	gameServicesServer := presentation.New(inputPort, applicationInputPort, inputPort2, inputPort3)
 	return gameServicesServer
 }
