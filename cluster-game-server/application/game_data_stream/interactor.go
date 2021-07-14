@@ -1,6 +1,7 @@
 package application
 
 import (
+	"io"
 	"sync"
 	"time"
 
@@ -12,45 +13,49 @@ import (
 type interactor struct {
 	accountrepo   account.Repository
 	characterrepo character.Repository
+	streams       []pb.GameServices_GameDataStreamServer
+	smu           *sync.Mutex
 }
-
-var arrayMutex = &sync.Mutex{}
-var streamArray []pb.GameServices_GameDataStreamServer
 
 func New(ar account.Repository, cr character.Repository) InputPort {
 	i := &interactor{
 		accountrepo:   ar,
 		characterrepo: cr,
+		streams:       []pb.GameServices_GameDataStreamServer{},
+		smu:           &sync.Mutex{},
 	}
 	go sender(*i)
 	return i
 }
 
-func (i interactor) Handle(input InputData) {
+func (i *interactor) Handle(input InputData) {
 	stream := input.Stream
 
-	arrayMutex.Lock()
-	streamArray = append(streamArray, stream)
-	arrayMutex.Unlock()
+	i.smu.Lock()
+	i.streams = append(i.streams, stream)
+	i.smu.Unlock()
 
 	defer func() {
-		arrayMutex.Lock()
+		i.smu.Lock()
 
 		var res []pb.GameServices_GameDataStreamServer
-		for _, v := range streamArray {
+		for _, v := range i.streams {
 			if v != stream {
 				res = append(res, v)
 			}
 		}
-		streamArray = res
+		i.streams = res
 
-		arrayMutex.Unlock()
+		i.smu.Unlock()
 	}()
 
 	cindex := -1
 
 	for {
 		req, err := stream.Recv()
+		if err == io.EOF {
+			continue
+		}
 		if err != nil {
 			break
 		}
@@ -93,10 +98,10 @@ func sender(i interactor) {
 			},
 		}
 
-		arrayMutex.Lock()
-		for _, s := range streamArray {
+		i.smu.Lock()
+		for _, s := range i.streams {
 			s.Send(&responce)
 		}
-		arrayMutex.Unlock()
+		i.smu.Unlock()
 	}
 }
