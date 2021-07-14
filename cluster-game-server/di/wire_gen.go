@@ -11,7 +11,8 @@ import (
 	application4 "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/game_data_stream"
 	application3 "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/get_connection_status"
 	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/cache"
-	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/repository"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/repository/account"
+	infra2 "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/repository/character"
 	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/presentation"
 	"github.com/CA22-game-creators/cookingbomb-proto/server/pb/game"
 )
@@ -24,7 +25,8 @@ func DI() game.GameServicesServer {
 	inputPort := application.New(repository)
 	applicationInputPort := application2.New(repository)
 	inputPort2 := application3.New(repository)
-	inputPort3 := application4.New(repository)
+	domainRepository := infra2.New()
+	inputPort3 := application4.New(repository, domainRepository)
 	gameServicesServer := presentation.New(inputPort, applicationInputPort, inputPort2, inputPort3)
 	return gameServicesServer
 }

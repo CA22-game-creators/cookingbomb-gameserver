@@ -39,6 +39,7 @@ dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
+github.com/CA22-game-creators/cookingbomb-gameserver v0.0.0-20210711033918-8e6f8ab364a3 h1:YV5CYwGlN3M3nJqPD+1wNJ207jGIRinDsy4ITwc2Njc=
 github.com/CA22-game-creators/cookingbomb-proto v0.1.11 h1:IU31EJlvBuFrtCH2O+C/w/BW5FaFbyBUtYydFB20d3Q=
 github.com/CA22-game-creators/cookingbomb-proto v0.1.11/go.mod h1:Z1YR2OqCa/nbCdSdAYurz3XYZeh8zGicpk2J2RyHfyo=
 github.com/Djarvur/go-err113 v0.0.0-20210108212216-aea10b59be24 h1:sHglBQTwgx+rWPdisA5ynNEsoARbiCBOyGcJM4/OzsM=

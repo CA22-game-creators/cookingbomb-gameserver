@@ -10,20 +10,17 @@ import (
 )
 
 type interactor struct {
-	repository account.Repository
-	writewg    *sync.WaitGroup
-	sendwg     *sync.WaitGroup
+	accountrepo   account.Repository
+	characterrepo character.Repository
 }
 
-var characterMap map[string]character.Character
 var arrayMutex = &sync.Mutex{}
-var streamArray []*pb.GameServices_GameDataStreamServer
+var streamArray []pb.GameServices_GameDataStreamServer
 
-func New(r account.Repository) InputPort {
+func New(ar account.Repository, cr character.Repository) InputPort {
 	i := &interactor{
-		repository: r,
-		writewg:    &sync.WaitGroup{},
-		sendwg:     &sync.WaitGroup{},
+		accountrepo:   ar,
+		characterrepo: cr,
 	}
 	go sender(*i)
 	return i
@@ -33,15 +30,15 @@ func (i interactor) Handle(input InputData) {
 	stream := input.Stream
 
 	arrayMutex.Lock()
-	streamArray = append(streamArray, &stream)
+	streamArray = append(streamArray, stream)
 	arrayMutex.Unlock()
 
 	defer func() {
 		arrayMutex.Lock()
 
-		var res []*pb.GameServices_GameDataStreamServer
+		var res []pb.GameServices_GameDataStreamServer
 		for _, v := range streamArray {
-			if v != &stream {
+			if v != stream {
 				res = append(res, v)
 			}
 		}
@@ -50,6 +47,8 @@ func (i interactor) Handle(input InputData) {
 		arrayMutex.Unlock()
 	}()
 
+	cindex := -1
+
 	for {
 		req, err := stream.Recv()
 		if err != nil {
@@ -57,7 +56,7 @@ func (i interactor) Handle(input InputData) {
 		}
 
 		token := req.GetSessionToken()
-		if status := i.repository.GetSessionStatus(token); !status.IsActive() {
+		if status := i.accountrepo.GetSessionStatus(token); !status.IsActive() {
 			break
 		}
 
@@ -65,28 +64,39 @@ func (i interactor) Handle(input InputData) {
 
 		switch x := message.(type) {
 		case *pb.GameDataRequest_CharacterUpdate:
-			c := character.FromRepository(x.CharacterUpdate)
-			i.sendwg.Wait()
-			i.writewg.Add(1)
-			characterMap[token] = c
-			i.writewg.Done()
+			c := x.CharacterUpdate
+			if cindex == -1 {
+				cindex = i.characterrepo.Add(c)
+			} else {
+				i.characterrepo.Update(c, cindex)
+			}
 		}
 	}
-	return
 }
 
 func sender(i interactor) {
-	t := time.NewTicker(33 * time.Millisecond)
+	t := time.NewTicker(100 * time.Millisecond)
 	defer t.Stop()
 	for {
-		select {
-		case <-t.C:
-			i.sendwg.Add(1)
-			i.writewg.Wait()
-			arrayMutex.Lock()
+		<-t.C
 
-			arrayMutex.Unlock()
-			i.sendwg.Done()
+		clist := i.characterrepo.GetAll()
+		if clist == nil {
+			continue
 		}
+
+		characters := pb.Characters{}
+		copy(characters.Characters, *clist)
+		responce := pb.GameDataResponse{
+			Message: &pb.GameDataResponse_CharacterDatas{
+				CharacterDatas: &characters,
+			},
+		}
+
+		arrayMutex.Lock()
+		for _, s := range streamArray {
+			s.Send(&responce)
+		}
+		arrayMutex.Unlock()
 	}
 }
