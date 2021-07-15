@@ -104,7 +104,7 @@ func sender(i interactor) {
 
 		characters := pb.Characters{}
 		copy(characters.Characters, *clist)
-		responce := pb.GameDataResponse{
+		response := pb.GameDataResponse{
 			Message: &pb.GameDataResponse_CharacterDatas{
 				CharacterDatas: &characters,
 			},
@@ -112,7 +112,7 @@ func sender(i interactor) {
 
 		i.smu.Lock()
 		for _, s := range i.streams {
-			err := s.Send(&responce)
+			err := s.Send(&response)
 			if err != nil {
 				continue
 			}
