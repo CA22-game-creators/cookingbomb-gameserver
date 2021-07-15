@@ -1,12 +1,12 @@
 package application
 
 import (
-	"io"
 	"sync"
 	"time"
 
 	account "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/account"
 	character "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/character"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/game"
 )
 
@@ -31,6 +31,8 @@ func New(ar account.Repository, cr character.Repository) InputPort {
 func (i *interactor) Handle(input InputData) {
 	stream := input.Stream
 
+	var errch chan error
+
 	i.smu.Lock()
 	i.streams = append(i.streams, stream)
 	i.smu.Unlock()
@@ -49,19 +51,29 @@ func (i *interactor) Handle(input InputData) {
 		i.smu.Unlock()
 	}()
 
+	go i.receiver(stream, errch)
+
+	for {
+		err := <-errch
+		if err != nil {
+			break
+		}
+	}
+}
+
+func (i *interactor) receiver(stream pb.GameServices_GameDataStreamServer, errch chan error) {
 	cindex := -1
 
 	for {
 		req, err := stream.Recv()
-		if err == io.EOF {
-			continue
-		}
 		if err != nil {
+			errch <- err
 			break
 		}
 
 		token := req.GetSessionToken()
 		if status := i.accountrepo.GetSessionStatus(token); !status.IsActive() {
+			errch <- errors.SessionNotActive()
 			break
 		}
 
@@ -100,7 +112,10 @@ func sender(i interactor) {
 
 		i.smu.Lock()
 		for _, s := range i.streams {
-			s.Send(&responce)
+			err := s.Send(&responce)
+			if err != nil {
+				continue
+			}
 		}
 		i.smu.Unlock()
 	}
