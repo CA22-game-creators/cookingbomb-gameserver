@@ -109,7 +109,6 @@ func sender(i interactor) {
 				CharacterDatas: &characters,
 			},
 		}
-
 		i.smu.Lock()
 		for _, s := range i.streams {
 			err := s.Send(&response)

@@ -134,7 +134,7 @@ func sender(token string, stream game.GameServices_GameDataStreamClient, waitc c
 	for {
 		r, err := tty.ReadRune()
 		if err != nil {
-			log.Fatal(err)
+			log.Print(err)
 			break
 		}
 
@@ -147,6 +147,9 @@ func sender(token string, stream game.GameServices_GameDataStreamClient, waitc c
 			character.Position.X++
 		case "d":
 			character.Position.X--
+		case "q":
+			close(waitc)
+			return
 		}
 
 		err = stream.Send(&game.GameDataRequest{
@@ -159,6 +162,8 @@ func sender(token string, stream game.GameServices_GameDataStreamClient, waitc c
 		if err != nil {
 			log.Fatalf("Data Send Failed: %v", err)
 		}
+
+		log.Printf("Data Send: %s", character.String())
 	}
 	close(waitc)
 }
@@ -170,7 +175,7 @@ func receiver(stream game.GameServices_GameDataStreamClient, waitc chan struct{}
 			break
 		}
 		if err != nil {
-			log.Fatalf("Data Recv Failed: %v", err)
+			log.Printf("Data Recv Failed: %v", err)
 		}
 		log.Printf("%s", in.Message)
 	}
@@ -197,6 +202,7 @@ func stream(token string) {
 	waitc := make(chan struct{})
 	go sender(token, stream, waitc)
 	go receiver(stream, waitc)
+	<-waitc
 }
 
 func main() {
