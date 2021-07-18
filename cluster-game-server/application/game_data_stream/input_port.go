@@ -2,5 +2,5 @@
 package application
 
 type InputPort interface {
-	Handle(InputData)
+	Handle(InputData) OutputData
 }

@@ -1,6 +1,7 @@
 package application
 
 import (
+	"io"
 	"sync"
 	"time"
 
@@ -13,7 +14,7 @@ import (
 type interactor struct {
 	accountrepo   account.Repository
 	characterrepo character.Repository
-	streams       []pb.GameServices_GameDataStreamServer
+	streams       *[]pb.GameServices_GameDataStreamServer
 	smu           *sync.Mutex
 }
 
@@ -21,32 +22,32 @@ func New(ar account.Repository, cr character.Repository) InputPort {
 	i := &interactor{
 		accountrepo:   ar,
 		characterrepo: cr,
-		streams:       []pb.GameServices_GameDataStreamServer{},
+		streams:       &[]pb.GameServices_GameDataStreamServer{},
 		smu:           &sync.Mutex{},
 	}
 	go sender(*i)
 	return i
 }
 
-func (i *interactor) Handle(input InputData) {
+func (i *interactor) Handle(input InputData) OutputData {
 	stream := input.Stream
 
-	var errch chan error
+	errch := make(chan error)
 
 	i.smu.Lock()
-	i.streams = append(i.streams, stream)
+	*i.streams = append(*i.streams, stream)
 	i.smu.Unlock()
 
 	defer func() {
 		i.smu.Lock()
 
 		var res []pb.GameServices_GameDataStreamServer
-		for _, v := range i.streams {
+		for _, v := range *i.streams {
 			if v != stream {
 				res = append(res, v)
 			}
 		}
-		i.streams = res
+		*i.streams = res
 
 		i.smu.Unlock()
 	}()
@@ -55,13 +56,18 @@ func (i *interactor) Handle(input InputData) {
 
 	for {
 		err := <-errch
+		if err == io.EOF {
+			return OutputData{}
+		}
 		if err != nil {
-			break
+			return OutputData{
+				Err: err,
+			}
 		}
 	}
 }
 
-func (i *interactor) receiver(stream pb.GameServices_GameDataStreamServer, errch chan error) {
+func (i *interactor) receiver(stream pb.GameServices_GameDataStreamServer, errch chan<- error) {
 	cindex := -1
 
 	for {
@@ -101,16 +107,16 @@ func sender(i interactor) {
 		if clist == nil {
 			continue
 		}
-
-		characters := pb.Characters{}
-		copy(characters.Characters, *clist)
+		characters := pb.Characters{
+			Characters: *clist,
+		}
 		response := pb.GameDataResponse{
 			Message: &pb.GameDataResponse_CharacterDatas{
 				CharacterDatas: &characters,
 			},
 		}
 		i.smu.Lock()
-		for _, s := range i.streams {
+		for _, s := range *i.streams {
 			err := s.Send(&response)
 			if err != nil {
 				continue

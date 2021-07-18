@@ -9,6 +9,9 @@ import (
 func (c controller) GameDataStream(stream pb.GameServices_GameDataStreamServer) error {
 
 	input := application.InputData{Stream: stream}
-	c.gameDataStream.Handle(input)
+	output := c.gameDataStream.Handle(input)
+	if output.Err != nil {
+		return output.Err
+	}
 	return nil
 }
