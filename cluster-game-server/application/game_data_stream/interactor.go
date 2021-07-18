@@ -25,7 +25,7 @@ func New(ar account.Repository, cr character.Repository) InputPort {
 		streams:       &[]pb.GameServices_GameDataStreamServer{},
 		smu:           &sync.Mutex{},
 	}
-	go sender(*i)
+	go i.sender()
 	return i
 }
 
@@ -54,16 +54,12 @@ func (i *interactor) Handle(input InputData) OutputData {
 
 	go i.receiver(stream, errch)
 
-	for {
-		err := <-errch
-		if err == io.EOF {
-			return OutputData{}
-		}
-		if err != nil {
-			return OutputData{
-				Err: err,
-			}
-		}
+	err := <-errch
+	if err == io.EOF {
+		return OutputData{}
+	}
+	return OutputData{
+		Err: err,
 	}
 }
 
@@ -97,7 +93,7 @@ func (i *interactor) receiver(stream pb.GameServices_GameDataStreamServer, errch
 	}
 }
 
-func sender(i interactor) {
+func (i *interactor) sender() {
 	t := time.NewTicker(100 * time.Millisecond)
 	defer t.Stop()
 	for {
@@ -117,8 +113,7 @@ func sender(i interactor) {
 		}
 		i.smu.Lock()
 		for _, s := range *i.streams {
-			err := s.Send(&response)
-			if err != nil {
+			if err := s.Send(&response); err != nil {
 				continue
 			}
 		}
