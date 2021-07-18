@@ -19,14 +19,6 @@ func New() domain.Repository {
 	}
 }
 
-func AddT(i *impl, c domain.Character) int {
-	i.mu.Lock()
-	*i.characters = append(*i.characters, c)
-	index := len(*i.characters) - 1
-	i.mu.Unlock()
-	return index
-}
-
 func (i *impl) Add(c domain.Character) int {
 	i.mu.Lock()
 	*i.characters = append(*i.characters, c)
@@ -39,7 +31,7 @@ func (i *impl) GetAll() *[]domain.Character {
 	i.mu.Lock()
 	len := len(*i.characters)
 	sl := make([]domain.Character, len)
-	copy(*i.characters, sl)
+	copy(sl, *i.characters)
 	i.mu.Unlock()
 	return &sl
 }
