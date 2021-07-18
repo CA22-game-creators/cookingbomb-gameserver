@@ -7,37 +7,33 @@ import (
 )
 
 type impl struct {
-	characters []domain.Character
+	characters map[string]domain.Character
 	mu         *sync.Mutex
 }
 
 func New() domain.Repository {
-	slice := []domain.Character{}
+	slice := map[string]domain.Character{}
 	return &impl{
 		characters: slice,
 		mu:         &sync.Mutex{},
 	}
 }
 
-func (i *impl) Add(c domain.Character) int {
-	i.mu.Lock()
-	i.characters = append(i.characters, c)
-	index := len(i.characters) - 1
-	i.mu.Unlock()
-	return index
-}
-
 func (i *impl) GetAll() *[]domain.Character {
 	i.mu.Lock()
 	len := len(i.characters)
 	sl := make([]domain.Character, len)
-	copy(sl, i.characters)
+	index := 0
+	for _, v := range i.characters {
+		sl[index] = v
+		index++
+	}
 	i.mu.Unlock()
 	return &sl
 }
 
-func (i *impl) Update(c domain.Character, index int) {
+func (i *impl) Update(c domain.Character) {
 	i.mu.Lock()
-	(i.characters)[index] = c
+	i.characters[c.Id] = c
 	i.mu.Unlock()
 }

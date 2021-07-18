@@ -2,7 +2,6 @@
 package domain
 
 type Repository interface {
-	Add(Character) int
-	Update(Character, int)
+	Update(Character)
 	GetAll() *[]Character
 }

@@ -64,7 +64,6 @@ func (i *interactor) Handle(input InputData) OutputData {
 }
 
 func (i *interactor) receiver(stream pb.GameServices_GameDataStreamServer, errch chan<- error) {
-	cindex := -1
 
 	for {
 		req, err := stream.Recv()
@@ -84,11 +83,7 @@ func (i *interactor) receiver(stream pb.GameServices_GameDataStreamServer, errch
 		switch x := message.(type) {
 		case *pb.GameDataRequest_CharacterUpdate:
 			c := x.CharacterUpdate
-			if cindex == -1 {
-				cindex = i.characterrepo.Add(c)
-			} else {
-				i.characterrepo.Update(c, cindex)
-			}
+			i.characterrepo.Update(c)
 		}
 	}
 }

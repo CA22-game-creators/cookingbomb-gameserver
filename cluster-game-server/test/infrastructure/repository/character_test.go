@@ -22,7 +22,7 @@ func TestConnect(t *testing.T) {
 		{
 			title: "[正常] キャラクターを追加し、取得できる",
 			before: func() {
-				repo.Add(&testdata.Character)
+				repo.Update(&testdata.Character)
 			},
 			check: func(t *testing.T) {
 				cl := repo.GetAll()
