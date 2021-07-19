@@ -15,7 +15,7 @@ type interactor struct {
 	accountrepo   account.Repository
 	characterrepo character.Repository
 	streams       *[]pb.GameServices_GameDataStreamServer
-	smu           *sync.Mutex
+	smu           sync.Mutex
 }
 
 func New(ar account.Repository, cr character.Repository) InputPort {
@@ -23,7 +23,7 @@ func New(ar account.Repository, cr character.Repository) InputPort {
 		accountrepo:   ar,
 		characterrepo: cr,
 		streams:       &[]pb.GameServices_GameDataStreamServer{},
-		smu:           &sync.Mutex{},
+		smu:           sync.Mutex{},
 	}
 	go i.sender()
 	return i
