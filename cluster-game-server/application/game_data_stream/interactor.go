@@ -25,7 +25,6 @@ func New(ar account.Repository, cr character.Repository) InputPort {
 		streams:       &[]pb.GameServices_GameDataStreamServer{},
 		smu:           sync.Mutex{},
 	}
-	go i.sender()
 	return i
 }
 
@@ -35,6 +34,9 @@ func (i *interactor) Handle(input InputData) OutputData {
 	errch := make(chan error)
 
 	i.smu.Lock()
+	if len(*i.streams) == 0 {
+		go i.sender()
+	}
 	*i.streams = append(*i.streams, stream)
 	i.smu.Unlock()
 
@@ -107,6 +109,9 @@ func (i *interactor) sender() {
 			},
 		}
 		i.smu.Lock()
+		if len(*i.streams) == 0 {
+			break
+		}
 		for _, s := range *i.streams {
 			if err := s.Send(&response); err != nil {
 				continue

@@ -34,20 +34,6 @@ func (m *MockRepository) EXPECT() *MockRepositoryMockRecorder {
 	return m.recorder
 }
 
-// Add mocks base method.
-func (m *MockRepository) Add(arg0 domain.Character) int {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Add", arg0)
-	ret0, _ := ret[0].(int)
-	return ret0
-}
-
-// Add indicates an expected call of Add.
-func (mr *MockRepositoryMockRecorder) Add(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockRepository)(nil).Add), arg0)
-}
-
 // GetAll mocks base method.
 func (m *MockRepository) GetAll() *[]domain.Character {
 	m.ctrl.T.Helper()
@@ -63,13 +49,13 @@ func (mr *MockRepositoryMockRecorder) GetAll() *gomock.Call {
 }
 
 // Update mocks base method.
-func (m *MockRepository) Update(arg0 domain.Character, arg1 int) {
+func (m *MockRepository) Update(arg0 domain.Character) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Update", arg0, arg1)
+	m.ctrl.Call(m, "Update", arg0)
 }
 
 // Update indicates an expected call of Update.
-func (mr *MockRepositoryMockRecorder) Update(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockRepositoryMockRecorder) Update(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRepository)(nil).Update), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRepository)(nil).Update), arg0)
 }
