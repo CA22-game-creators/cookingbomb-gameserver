@@ -22,14 +22,12 @@ func New() domain.Repository {
 func (i *impl) GetAll() *[]domain.Character {
 	i.mu.Lock()
 	len := len(i.characters)
-	sl := make([]domain.Character, len)
-	index := 0
+	characters := make([]domain.Character, 0, len)
 	for _, v := range i.characters {
-		sl[index] = v
-		index++
+		characters = append(characters, v)
 	}
 	i.mu.Unlock()
-	return &sl
+	return &characters
 }
 
 func (i *impl) Update(c domain.Character) {
