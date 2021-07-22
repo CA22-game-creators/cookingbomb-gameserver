@@ -1,4 +1,4 @@
-package application_disconnect_test
+package interactor_test
 
 import (
 	"testing"

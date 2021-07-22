@@ -1,4 +1,4 @@
-package application_get_connection_status_test
+package interactor_test
 
 import (
 	"testing"
