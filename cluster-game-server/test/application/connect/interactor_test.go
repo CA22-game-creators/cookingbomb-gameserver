@@ -1,4 +1,4 @@
-package application_connect_test
+package interactor_test
 
 import (
 	"testing"

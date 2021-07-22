@@ -1,10 +1,11 @@
-package application_game_data_stream_test
+package interactor_test
 
 import (
 	"io"
 	"testing"
 	"time"
 
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -12,10 +13,27 @@ import (
 	gameDataStream "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/game_data_stream"
 	account "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/account"
 	character "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/character"
+	mockDomainAccount "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/mock/domain/model/account"
+	mockDomainCharacter "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/mock/domain/model/character"
 	charactertd "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/test/testdata/character"
 	stream "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/test/testdata/stream"
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/game"
 )
+
+type testHandler struct {
+	gameDataStream gameDataStream.InputPort
+
+	accountrepo   *mockDomainAccount.MockRepository
+	characterrepo *mockDomainCharacter.MockRepository
+}
+
+func (h *testHandler) setupTest(t *testing.T) {
+	ctrl := gomock.NewController(t)
+
+	h.accountrepo = mockDomainAccount.NewMockRepository(ctrl)
+	h.characterrepo = mockDomainCharacter.NewMockRepository(ctrl)
+	h.gameDataStream = gameDataStream.New(h.accountrepo, h.characterrepo)
+}
 
 func TestGameDataStreamHandle(t *testing.T) {
 	t.Parallel()
