@@ -23,7 +23,7 @@ func (i interactor) Handle(input InputData) OutputData {
 	}
 
 	if status := i.repository.GetSessionStatus(input.SessionToken); !status.IsConnectable() {
-		return OutputData{Err: errors.InvalidOperation()}
+		return OutputData{Err: errors.InvalidArgument("already connected")}
 	}
 
 	i.repository.Connect(input.SessionToken)

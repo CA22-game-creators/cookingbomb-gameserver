@@ -39,7 +39,7 @@ func (i impl) Find(sesisonToken string) (domain.Account, error) {
 	client := pb.NewAccountServicesClient(conn)
 	req := &pb.GetAccountInfoRequest{SessionToken: sesisonToken}
 	res, err := client.GetAccountInfo(ctx, req)
-	if err != nil || res.GetAccountInfo() == nil {
+	if err != nil {
 		return domain.Account{}, errors.AuthAPIThrowError(err.Error())
 	}
 
