@@ -3,15 +3,14 @@ package infra
 import (
 	"context"
 	"log"
-	"os"
 	"time"
 
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/api"
 	goCache "github.com/patrickmn/go-cache"
-	"google.golang.org/grpc"
 
 	domain "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/account"
 	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/api"
 )
 
 type impl struct {
@@ -30,11 +29,7 @@ func (i impl) Find(sesisonToken string) (domain.Account, error) {
 		time.Second*5,
 	)
 	defer cancel()
-	conn, err := grpc.Dial(
-		os.Getenv("API_ADDRESS"),
-		grpc.WithInsecure(),
-		grpc.WithBlock(),
-	)
+	conn, err := api.New()
 	if err != nil {
 		log.Print("API Server Connection Failed: ", err)
 		return domain.Account{}, errors.APIConnectionLost()
