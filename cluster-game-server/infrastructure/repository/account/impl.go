@@ -6,6 +6,7 @@ import (
 	"time"
 
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/api"
+	"github.com/oklog/ulid/v2"
 	goCache "github.com/patrickmn/go-cache"
 
 	domain "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/account"
@@ -49,18 +50,18 @@ func (i impl) Find(sesisonToken string) (domain.Account, error) {
 	), nil
 }
 
-func (i impl) GetSessionStatus(sessionToken string) domain.StatusEnum {
-	status, ok := i.instance.Get(sessionToken)
+func (i impl) GetSessionStatus(id domain.ID) domain.StatusEnum {
+	status, ok := i.instance.Get(ulid.ULID(id).String())
 	if !ok {
 		return domain.UNSPECIFIED
 	}
 	return status.(domain.StatusEnum)
 }
 
-func (i impl) Connect(sessionToken string) {
-	i.instance.Set(sessionToken, domain.CONNECTED, goCache.NoExpiration)
+func (i impl) Connect(id domain.ID) {
+	i.instance.Set(ulid.ULID(id).String(), domain.CONNECTED, goCache.NoExpiration)
 }
 
-func (i impl) Disconnect(sessionToken string) {
-	i.instance.Set(sessionToken, domain.DISCONNECTED_BY_CLIENT, goCache.DefaultExpiration)
+func (i impl) Disconnect(id domain.ID) {
+	i.instance.Set(ulid.ULID(id).String(), domain.DISCONNECTED_BY_CLIENT, goCache.DefaultExpiration)
 }
