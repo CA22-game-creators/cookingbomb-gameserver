@@ -54,10 +54,12 @@ func (i *interactor) Handle(input InputData) OutputData {
 		return OutputData{Err: errors.InvalidOperation()}
 	}
 
+	//接続処理
 	i.accountrepo.Connect(userid)
 
 	errch := make(chan error)
 
+	//送信用ストリームリストに登録
 	i.smu.Lock()
 	if len(*i.streams) == 0 {
 		go i.sender()
@@ -66,6 +68,7 @@ func (i *interactor) Handle(input InputData) OutputData {
 	i.smu.Unlock()
 
 	defer func() {
+		//ストリームリストから削除
 		i.smu.Lock()
 
 		var res []pb.GameServices_GameDataStreamServer
@@ -79,12 +82,17 @@ func (i *interactor) Handle(input InputData) OutputData {
 		i.smu.Unlock()
 	}()
 
+	//受信開始
 	go i.receiver(stream, errch, userid)
 
 	err = <-errch
 	if err == io.EOF {
+		i.accountrepo.Disconnect(userid)
 		return OutputData{}
 	}
+
+	//TODO: エラー用のステータスに変更
+	i.accountrepo.Disconnect(userid)
 	return OutputData{
 		Err: err,
 	}
