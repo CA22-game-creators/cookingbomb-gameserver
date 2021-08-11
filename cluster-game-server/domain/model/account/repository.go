@@ -3,7 +3,7 @@ package domain
 
 type Repository interface {
 	Find(sessionToken string) (Account, error)
-	GetSessionStatus(sessionToken string) StatusEnum
-	Connect(sessionToken string)
-	Disconnect(sessionToken string)
+	GetSessionStatus(id ID) StatusEnum
+	Connect(id ID)
+	Disconnect(id ID)
 }
