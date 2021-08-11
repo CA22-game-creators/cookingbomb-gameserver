@@ -9,6 +9,7 @@ import (
 	character "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/character"
 	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/game"
+	"google.golang.org/grpc/metadata"
 )
 
 type interactor struct {
@@ -31,8 +32,34 @@ func New(ar account.Repository, cr character.Repository) InputPort {
 func (i *interactor) Handle(input InputData) OutputData {
 	stream := input.Stream
 
+	//ヘッダーチェック
+	headers, ok := metadata.FromIncomingContext(stream.Context())
+	if !ok && len(headers["sessiontoken"]) > 0 {
+		return OutputData{
+			Err: errors.AuthMDNotFound(),
+		}
+	}
+
+	token := headers["sessiontoken"][0]
+
+	//tokenチェック
+	val, err := i.accountrepo.Find(token)
+	if err != nil {
+		return OutputData{Err: err}
+	}
+
+	userid := val.ID
+
+	if status := i.accountrepo.GetSessionStatus(userid); !status.IsConnectable() {
+		return OutputData{Err: errors.InvalidOperation()}
+	}
+
+	//接続処理
+	i.accountrepo.Connect(userid)
+
 	errch := make(chan error)
 
+	//送信用ストリームリストに登録
 	i.smu.Lock()
 	if len(*i.streams) == 0 {
 		go i.sender()
@@ -41,6 +68,7 @@ func (i *interactor) Handle(input InputData) OutputData {
 	i.smu.Unlock()
 
 	defer func() {
+		//ストリームリストから削除
 		i.smu.Lock()
 
 		var res []pb.GameServices_GameDataStreamServer
@@ -54,18 +82,23 @@ func (i *interactor) Handle(input InputData) OutputData {
 		i.smu.Unlock()
 	}()
 
-	go i.receiver(stream, errch)
+	//受信開始
+	go i.receiver(stream, errch, userid)
 
-	err := <-errch
+	err = <-errch
 	if err == io.EOF {
+		i.accountrepo.Disconnect(userid)
 		return OutputData{}
 	}
+
+	//TODO: エラー用のステータスに変更
+	i.accountrepo.Disconnect(userid)
 	return OutputData{
 		Err: err,
 	}
 }
 
-func (i *interactor) receiver(stream pb.GameServices_GameDataStreamServer, errch chan<- error) {
+func (i *interactor) receiver(stream pb.GameServices_GameDataStreamServer, errch chan<- error, id account.ID) {
 
 	for {
 		req, err := stream.Recv()
@@ -74,8 +107,7 @@ func (i *interactor) receiver(stream pb.GameServices_GameDataStreamServer, errch
 			break
 		}
 
-		token := req.GetSessionToken()
-		if status := i.accountrepo.GetSessionStatus(token); !status.IsActive() {
+		if status := i.accountrepo.GetSessionStatus(id); !status.IsActive() {
 			errch <- errors.SessionNotActive()
 			break
 		}

@@ -2,7 +2,8 @@ package application
 
 import (
 	domain "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/account"
-	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type interactor struct {
@@ -16,12 +17,16 @@ func New(r domain.Repository) InputPort {
 }
 
 func (i interactor) Handle(input InputData) OutputData {
-
-	if status := i.repository.GetSessionStatus(input.SessionToken); !status.IsActive() {
-		return OutputData{Err: errors.SessionNotActive()}
+	return OutputData{
+		Err: status.Error(codes.Unimplemented, "duplicated"),
 	}
+	/*
+		if status := i.repository.GetSessionStatus(input.SessionToken); !status.IsActive() {
+			return OutputData{Err: errors.SessionNotActive()}
+		}
 
-	i.repository.Disconnect(input.SessionToken)
+		i.repository.Disconnect(input.SessionToken)
 
-	return OutputData{Status: i.repository.GetSessionStatus(input.SessionToken)}
+		return OutputData{Status: i.repository.GetSessionStatus(input.SessionToken)}
+	*/
 }
