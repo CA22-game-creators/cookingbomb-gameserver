@@ -35,27 +35,27 @@ func (m *MockRepository) EXPECT() *MockRepositoryMockRecorder {
 }
 
 // Connect mocks base method.
-func (m *MockRepository) Connect(id domain.ID) {
+func (m *MockRepository) Connect(sessionToken string) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Connect", id)
+	m.ctrl.Call(m, "Connect", sessionToken)
 }
 
 // Connect indicates an expected call of Connect.
-func (mr *MockRepositoryMockRecorder) Connect(id interface{}) *gomock.Call {
+func (mr *MockRepositoryMockRecorder) Connect(sessionToken interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Connect", reflect.TypeOf((*MockRepository)(nil).Connect), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Connect", reflect.TypeOf((*MockRepository)(nil).Connect), sessionToken)
 }
 
 // Disconnect mocks base method.
-func (m *MockRepository) Disconnect(id domain.ID) {
+func (m *MockRepository) Disconnect(sessionToken string) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Disconnect", id)
+	m.ctrl.Call(m, "Disconnect", sessionToken)
 }
 
 // Disconnect indicates an expected call of Disconnect.
-func (mr *MockRepositoryMockRecorder) Disconnect(id interface{}) *gomock.Call {
+func (mr *MockRepositoryMockRecorder) Disconnect(sessionToken interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Disconnect", reflect.TypeOf((*MockRepository)(nil).Disconnect), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Disconnect", reflect.TypeOf((*MockRepository)(nil).Disconnect), sessionToken)
 }
 
 // Find mocks base method.
@@ -74,15 +74,15 @@ func (mr *MockRepositoryMockRecorder) Find(sessionToken interface{}) *gomock.Cal
 }
 
 // GetSessionStatus mocks base method.
-func (m *MockRepository) GetSessionStatus(id domain.ID) domain.StatusEnum {
+func (m *MockRepository) GetSessionStatus(sessionToken string) domain.StatusEnum {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetSessionStatus", id)
+	ret := m.ctrl.Call(m, "GetSessionStatus", sessionToken)
 	ret0, _ := ret[0].(domain.StatusEnum)
 	return ret0
 }
 
 // GetSessionStatus indicates an expected call of GetSessionStatus.
-func (mr *MockRepositoryMockRecorder) GetSessionStatus(id interface{}) *gomock.Call {
+func (mr *MockRepositoryMockRecorder) GetSessionStatus(sessionToken interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSessionStatus", reflect.TypeOf((*MockRepository)(nil).GetSessionStatus), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSessionStatus", reflect.TypeOf((*MockRepository)(nil).GetSessionStatus), sessionToken)
 }

@@ -9,10 +9,6 @@ func AuthAPIThrowError(v string) error {
 	return status.Errorf(codes.Unauthenticated, "Auth API Rejected Session Token: %s", v)
 }
 
-func AuthMDNotFound() error {
-	return status.Errorf(codes.Unauthenticated, "session token not found in header")
-}
-
 func SessionNotActive() error {
 	return status.Error(codes.PermissionDenied, "Session Not Active")
 }

@@ -15,14 +15,7 @@ func New(r domain.Repository) InputPort {
 }
 
 func (i interactor) Handle(input InputData) OutputData {
-
-	val, err := i.repository.Find(input.SessionToken)
-	if err != nil {
-		return OutputData{}
-	}
-
-	userid := val.ID
 	return OutputData{
-		Status: i.repository.GetSessionStatus(userid),
+		Status: i.repository.GetSessionStatus(input.SessionToken),
 	}
 }
