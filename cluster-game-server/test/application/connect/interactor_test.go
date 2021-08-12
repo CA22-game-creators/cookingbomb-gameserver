@@ -78,7 +78,7 @@ func TestConnect(t *testing.T) {
 				}).AnyTimes()
 			},
 			input:    connect.InputData{SessionToken: testdata.SessionToken.Valid},
-			expected: connect.OutputData{Err: errors.InvalidOperation()},
+			expected: connect.OutputData{Err: errors.InvalidArgument("already connected")},
 		},
 		{
 			title: "[異常]無効なセッショントークンを処理",
