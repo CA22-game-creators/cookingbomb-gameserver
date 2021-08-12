@@ -3,10 +3,12 @@ package infra
 import (
 	"context"
 	"log"
+	"os"
 	"time"
 
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/api"
 	goCache "github.com/patrickmn/go-cache"
+	"google.golang.org/grpc/metadata"
 
 	domain "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/account"
 	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
@@ -35,6 +37,11 @@ func (i impl) Find(sesisonToken string) (domain.Account, error) {
 		return domain.Account{}, errors.APIConnectionLost()
 	}
 	defer conn.Close()
+
+	if os.Getenv("ENV") != "local" {
+		md := metadata.New(map[string]string{"authorization": "Bearer " + os.Getenv("BEARER_TOKEN")})
+		ctx = metadata.NewOutgoingContext(ctx, md)
+	}
 
 	client := pb.NewAccountServicesClient(conn)
 	req := &pb.GetAccountInfoRequest{SessionToken: sesisonToken}
