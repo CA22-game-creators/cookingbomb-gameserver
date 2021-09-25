@@ -3,6 +3,7 @@ module github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server
 go 1.16
 
 require (
+	agones.dev/agones v1.17.0
 	github.com/CA22-game-creators/cookingbomb-proto v0.1.11
 	github.com/golang/mock v1.6.0
 	github.com/golangci/golangci-lint v1.41.1
