@@ -34,7 +34,7 @@ func main() {
 	pb.RegisterGameServicesServer(grpcServer, service)
 	reflection.Register(grpcServer)
 
-	if err = grpcServer.Serve(listen); err != nil {
+	if err := grpcServer.Serve(listen); err != nil {
 		log.Fatalf(err.Error())
 	}
 }
@@ -44,7 +44,7 @@ func setupAgones() {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	if err = s.Ready(); err != nil {
+	if err := s.Ready(); err != nil {
 		log.Fatalf(err.Error())
 	}
 	go healthCheck(s)
