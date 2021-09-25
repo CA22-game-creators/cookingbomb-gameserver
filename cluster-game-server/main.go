@@ -48,7 +48,7 @@ func setupAgones() {
 		log.Fatalf(err.Error())
 	}
 	go healthCheck(s)
-	shutdownAfterAllocation(s, aliveMin)
+	shutdownAfterAllocation(s)
 }
 
 func healthCheck(s *sdk.SDK) {
@@ -59,10 +59,10 @@ func healthCheck(s *sdk.SDK) {
 	}
 }
 
-func shutdownAfterAllocation(s *sdk.SDK, shutdownDelay int) {
+func shutdownAfterAllocation(s *sdk.SDK) {
 	err := s.WatchGameServer(func(gs *coresdk.GameServer) {
 		if gs.Status.State == "Allocated" {
-			time.Sleep(time.Duration(shutdownDelay) * time.Minute)
+			time.Sleep(time.Duration(aliveMin) * time.Minute)
 			if err := s.Shutdown(); err != nil {
 				log.Fatalf("Could not shutdown: %v", err)
 			}
