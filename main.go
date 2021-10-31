@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/di"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/di"
 )
 
 const aliveMin = 3

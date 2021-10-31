@@ -7,7 +7,7 @@ package mock_domain
 import (
 	reflect "reflect"
 
-	domain "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/character"
+	domain "github.com/CA22-game-creators/cookingbomb-gameserver/domain/model/character"
 	gomock "github.com/golang/mock/gomock"
 )
 

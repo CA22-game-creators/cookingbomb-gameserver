@@ -7,10 +7,10 @@
 package di
 
 import (
-	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/game_data_stream"
-	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/repository/account"
-	infra2 "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/repository/character"
-	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/presentation"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/application/game_data_stream"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/infrastructure/repository/account"
+	infra2 "github.com/CA22-game-creators/cookingbomb-gameserver/infrastructure/repository/character"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/presentation"
 	"github.com/CA22-game-creators/cookingbomb-proto/server/pb/game"
 )
 

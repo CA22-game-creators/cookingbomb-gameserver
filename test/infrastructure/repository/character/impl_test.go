@@ -6,8 +6,8 @@ import (
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/game"
 	"github.com/stretchr/testify/assert"
 
-	domain "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/character"
-	repoImpl "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/repository/character"
+	domain "github.com/CA22-game-creators/cookingbomb-gameserver/domain/model/character"
+	repoImpl "github.com/CA22-game-creators/cookingbomb-gameserver/infrastructure/repository/character"
 )
 
 type testHandler struct {

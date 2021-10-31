@@ -6,8 +6,8 @@ import (
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/game"
 	"github.com/stretchr/testify/assert"
 
-	application "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/game_data_stream"
-	td "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/test/testdata/stream"
+	application "github.com/CA22-game-creators/cookingbomb-gameserver/application/game_data_stream"
+	td "github.com/CA22-game-creators/cookingbomb-gameserver/test/testdata/stream"
 )
 
 func TestGameDataStream(t *testing.T) {

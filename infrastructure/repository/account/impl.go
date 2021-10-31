@@ -7,9 +7,9 @@ import (
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/api"
 	"google.golang.org/grpc/metadata"
 
-	domain "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/account"
-	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
-	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/api"
+	domain "github.com/CA22-game-creators/cookingbomb-gameserver/domain/model/account"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/errors"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/infrastructure/api"
 )
 
 type impl struct{}

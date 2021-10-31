@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/errors"
 )
 
 func New() (*grpc.ClientConn, error) {

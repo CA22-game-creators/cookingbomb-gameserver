@@ -7,10 +7,10 @@ import (
 	pb "github.com/CA22-game-creators/cookingbomb-proto/server/pb/game"
 	"github.com/google/wire"
 
-	gameDataStream "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/game_data_stream"
-	account "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/repository/account"
-	character "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/infrastructure/repository/character"
-	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/presentation"
+	gameDataStream "github.com/CA22-game-creators/cookingbomb-gameserver/application/game_data_stream"
+	account "github.com/CA22-game-creators/cookingbomb-gameserver/infrastructure/repository/account"
+	character "github.com/CA22-game-creators/cookingbomb-gameserver/infrastructure/repository/character"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/presentation"
 )
 
 func DI() pb.GameServicesServer {

@@ -10,9 +10,9 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	account "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/account"
-	character "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/character"
-	"github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/errors"
+	account "github.com/CA22-game-creators/cookingbomb-gameserver/domain/model/account"
+	character "github.com/CA22-game-creators/cookingbomb-gameserver/domain/model/character"
+	"github.com/CA22-game-creators/cookingbomb-gameserver/errors"
 )
 
 type interactor struct {

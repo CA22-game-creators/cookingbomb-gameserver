@@ -7,7 +7,7 @@ package mock_application
 import (
 	reflect "reflect"
 
-	application "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/application/game_data_stream"
+	application "github.com/CA22-game-creators/cookingbomb-gameserver/application/game_data_stream"
 	gomock "github.com/golang/mock/gomock"
 )
 

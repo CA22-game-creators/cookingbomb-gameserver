@@ -3,7 +3,7 @@ package infra
 import (
 	"sync"
 
-	domain "github.com/CA22-game-creators/cookingbomb-gameserver/cluster-game-server/domain/model/character"
+	domain "github.com/CA22-game-creators/cookingbomb-gameserver/domain/model/character"
 )
 
 type impl struct {
